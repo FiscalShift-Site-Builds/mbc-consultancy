@@ -7,16 +7,30 @@ and no build step on the host: `site/` is committed ready to serve.
 
 ## 1. Cloudflare Pages setup
 
-Create a Pages project from this repository and set:
+Repository: **`Kudakwashemaro/mbc-consultancy`** (private).
+
+In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**,
+authorise access to that repository, then set:
 
 | Setting | Value |
 | --- | --- |
+| Project name | `mbc-consultancy` |
+| Production branch | `main` |
 | Build command | *(leave empty)* |
 | Build output directory | `site` |
 | Root directory | *(repository root)* |
 
 Leave the build command empty — `site/` is already generated and committed.
 `build.py` exists so the HTML can be regenerated locally, not on the host.
+
+Most of this is also declared in [`wrangler.toml`](../wrangler.toml) at the repo
+root, which Cloudflare reads on each deployment, so the settings stay
+version-controlled rather than living only in the dashboard. You may still need to
+enter them once when first connecting the repo.
+
+After connecting, every push to `main` deploys and every pull request gets its own
+preview URL. The first deployment gives you a `*.pages.dev` hostname; use it to
+work through the rest of this document before pointing a real domain at it.
 
 > **`functions/` must stay at the repository root, not inside `site/`.**
 > Cloudflare reads Pages Functions from the repo root and maps the file tree
