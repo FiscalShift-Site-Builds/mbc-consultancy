@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-ZW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESC}}">
+{{ROBOTS}}<link rel="canonical" href="{{SITE}}{{PATH}}">
+
+<!-- Applied before first paint so scroll-reveal starts hidden without a flash.
+     If scripting is off this class is never set and all content is visible. -->
+<script>document.documentElement.className+=' js';</script>
+
+<link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/mbc.css">
+
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="/assets/img/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#06333C">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MBC Consultancy">
+<meta property="og:title" content="{{OG_TITLE}}">
+<meta property="og:description" content="{{DESC}}">
+<meta property="og:url" content="{{SITE}}{{PATH}}">
+<meta property="og:image" content="{{SITE}}/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="MBC Consultancy — compliance, handled with precision.">
+<meta property="og:locale" content="en_ZW">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AccountingService",
+  "name": "MBC Consultancy",
+  "description": "A professional services firm incorporated in Zimbabwe, specialising in regulatory compliance, auditing and accounting solutions.",
+  "url": "{{SITE}}/",
+  "logo": "{{SITE}}/assets/img/icon-512.png",
+  "image": "{{SITE}}/assets/img/og.png",
+  "email": "mmazha800@gmail.com",
+  "telephone": "+263774121012",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "58 Fife Street",
+    "addressLocality": "Bulawayo",
+    "addressCountry": "ZW"
+  },
+  "areaServed": { "@type": "Country", "name": "Zimbabwe" },
+  "knowsAbout": [
+    "NSSA compliance", "ZIMRA tax compliance", "CIPZ company registration",
+    "PRAZ procurement registration", "Ministry of Finance vendor registration",
+    "Statutory audit", "IFRS financial statements", "Payroll management",
+    "Tax advisory", "Corporate governance", "Fiscalisation"
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="curtain" aria-hidden="true"></div>
+<div class="wipe" aria-hidden="true"></div>
+
+{{HEADER}}
+
+<main id="main">
+{{CONTENT}}
+</main>
+
+{{FOOTER}}
+
+<script src="/assets/js/mbc.js" defer></script>
+</body>
+</html>

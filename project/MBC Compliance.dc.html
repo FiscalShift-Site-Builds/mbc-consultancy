@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+  body{margin:0;background:#fff;-webkit-font-smoothing:antialiased}
+  a{color:#06333C;text-decoration:none}
+  a:hover{color:#0097AD}
+  ::selection{background:#06333C;color:#fff}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @keyframes curtainUp{from{transform:translateY(0)}to{transform:translateY(-100%)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @media (max-width:900px){
+    [data-hero="1"],[data-2col="1"]{grid-template-columns:1fr!important;gap:28px!important}
+    [data-hero="1"]>div:first-child{padding:36px 0 0!important;border-right:none!important}
+    [data-hero="1"]>div:last-child{padding:0 0 34px!important}
+    [data-srow="1"]{grid-template-columns:1fr!important;gap:10px!important}
+  }
+  @media (max-width:620px){
+    [data-topbar="1"] span:nth-child(2){display:none}
+  }
+</style>
+</helmet>
+
+<div style="font-family:Archivo,Helvetica Neue,Helvetica,Arial,sans-serif;color:#0E262C;background:#fff">
+
+  <div style="position:fixed;inset:0;z-index:95;background:#06333C;transform:translateY(-100%);animation:curtainUp .55s cubic-bezier(.76,0,.24,1) both;pointer-events:none"></div>
+  <div data-wipe="1" style="position:fixed;inset:0;z-index:90;background:#06333C;transform:scaleY(0);transform-origin:bottom;pointer-events:none"></div>
+
+  <header style="position:sticky;top:0;z-index:40;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid #06333C">
+    <div style="max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,40px)">
+      <div data-topbar="1" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 32px;padding:13px 0;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#7A8B90;border-bottom:1px solid #E2E9EB">
+        <span>58 Fife Street, Bulawayo</span>
+        <span>Licenced ZIMRA tax agent</span>
+        <div style="display:flex;gap:20px">
+          <a href="tel:+263774121012" style="color:#7A8B90">(+263) 774 121 012</a>
+          <a href="mailto:mmazha800@gmail.com" style="color:#7A8B90">mmazha800@gmail.com</a>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px 32px;padding:16px 0">
+        <a href="MBC%20Consultancy%20v2.dc.html" style="display:flex;align-items:baseline;gap:11px">
+          <span style="font-size:30px;font-weight:700;letter-spacing:-.045em;color:#06333C;line-height:1">MBC</span>
+          <span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#7A8B90">Consultancy</span>
+        </a>
+        <nav style="display:flex;align-items:center;flex-wrap:wrap;gap:10px">
+          <a href="MBC%20Compliance.dc.html" style="padding:10px 20px;border:1px solid #06333C;border-radius:999px;white-space:nowrap;font-size:14px;font-weight:500;background:#06333C;color:#fff;transition:background .24s ease,color .24s ease,border-color .24s ease" style-hover="background:#06333C;color:#fff">Compliance</a>
+          <a href="MBC%20Other%20Services.dc.html#accounting" style="padding:10px 20px;border:1px solid #06333C;border-radius:999px;white-space:nowrap;font-size:14px;font-weight:500;transition:background .24s ease,color .24s ease,border-color .24s ease" style-hover="background:#06333C;color:#fff">Accounting</a>
+          <a href="MBC%20Fiscalisation.dc.html" style="padding:10px 20px;border:1px solid #06333C;border-radius:999px;white-space:nowrap;font-size:14px;font-weight:500;transition:background .24s ease,color .24s ease,border-color .24s ease" style-hover="background:#06333C;color:#fff">Fiscalisation</a>
+          <a href="MBC%20About.dc.html" style="padding:10px 14px;white-space:nowrap;font-size:14px;color:#566A70;transition:color .2s ease" style-hover="color:#D9788C">About</a>
+          <a href="MBC%20Contact.dc.html" style="padding:10px 20px;border-radius:999px;background:#06333C;color:#fff;white-space:nowrap;font-size:14px;font-weight:500;transition:background .24s ease" style-hover="background:#0097AD">Book a consultation</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <section style="border-bottom:1px solid #06333C">
+    <div style="max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,40px)">
+      <div data-hero="1" style="display:grid;grid-template-columns:1fr 320px;gap:0">
+        <div style="padding:58px 56px 48px 0;border-right:1px solid #E2E9EB">
+          <p data-anim="line" style="margin:0 0 22px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#0097AD">Statutory &amp; regulatory compliance</p>
+          <h1 data-anim="line" style="margin:0;font-size:clamp(36px,6.5vw,68px);line-height:1.04;font-weight:700;letter-spacing:-.04em;text-wrap:balance">Full regulatory adherence, authority by authority.</h1>
+          <p data-anim="line" style="margin:28px 0 0;font-size:19px;line-height:1.65;color:#566A70;max-width:32em;text-wrap:pretty">Registrations, contributions, returns and renewals across the authorities a Zimbabwean business answers to &mdash; so payroll, tenders and payments are never held up by paperwork.</p>
+        </div>
+        <div style="padding:58px 0 48px 32px">
+          <p style="margin:0 0 20px;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#0097AD">On this page</p>
+          <div style="display:flex;flex-direction:column;border-top:1px solid #E2E9EB">
+            <a href="#nssa" style="padding:12px 0;border-bottom:1px solid #E2E9EB;font-size:15px;color:#566A70">NSSA</a>
+            <a href="#zimra" style="padding:12px 0;border-bottom:1px solid #E2E9EB;font-size:15px;color:#566A70">ZIMRA</a>
+            <a href="#cipz" style="padding:12px 0;border-bottom:1px solid #E2E9EB;font-size:15px;color:#566A70">CIPZ</a>
+            <a href="#praz" style="padding:12px 0;border-bottom:1px solid #E2E9EB;font-size:15px;color:#566A70">PRAZ</a>
+            <a href="#vendor" style="padding:12px 0;border-bottom:1px solid #E2E9EB;font-size:15px;color:#566A70">Vendor registration</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#06333C;color:#fff">
+    <div style="max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,40px)">
+      <p style="margin:0;padding:44px 0 22px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#4DD9E8">Authority by authority</p>
+      <div id="nssa" data-srow="1" style="display:grid;grid-template-columns:230px 1fr;gap:40px;padding:30px 0;border-top:1px solid rgba(255,255,255,.2);scroll-margin-top:140px">
+        <div>
+          <p style="margin:0;font-size:clamp(26px,3.2vw,34px);font-weight:700;letter-spacing:-.04em;line-height:1;color:#fff">NSSA</p>
+          <p style="margin:10px 0 0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.55)">National Social Security Authority</p>
+        </div>
+        <p style="margin:0;font-size:16.5px;line-height:1.72;color:rgba(255,255,255,.8);max-width:46em">Registration, contributions, compliance reporting and exemption applications. We also correct historic filings where monthly schedules were missed.</p>
+      </div>
+      <div id="zimra" data-srow="1" style="display:grid;grid-template-columns:230px 1fr;gap:40px;padding:30px 0;border-top:1px solid rgba(255,255,255,.2);scroll-margin-top:140px">
+        <div>
+          <p style="margin:0;font-size:clamp(26px,3.2vw,34px);font-weight:700;letter-spacing:-.04em;line-height:1;color:#fff">ZIMRA</p>
+          <p style="margin:10px 0 0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.55)">Zimbabwe Revenue Authority</p>
+        </div>
+        <p style="margin:0;font-size:16.5px;line-height:1.72;color:rgba(255,255,255,.8);max-width:46em">Tax compliance, PAYE, VAT, corporate tax, customs and excise, and dispute resolution. As a licenced tax agent we handle TaRMS and tax head registrations, income tax returns, QPDs and tax clearance certificates.</p>
+      </div>
+      <div id="cipz" data-srow="1" style="display:grid;grid-template-columns:230px 1fr;gap:40px;padding:30px 0;border-top:1px solid rgba(255,255,255,.2);scroll-margin-top:140px">
+        <div>
+          <p style="margin:0;font-size:clamp(26px,3.2vw,34px);font-weight:700;letter-spacing:-.04em;line-height:1;color:#fff">CIPZ</p>
+          <p style="margin:10px 0 0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.55)">Companies and Intellectual Property of Zimbabwe</p>
+        </div>
+        <p style="margin:0;font-size:16.5px;line-height:1.72;color:rgba(255,255,255,.8);max-width:46em">Company registrations and re-registration, CIPZ e-papers, changes of directors and secretaries, and annual returns. Section 303(9) of the Companies and Other Business Entities Act requires all companies to re-register; failure to do so results in de-registration.</p>
+      </div>
+      <div id="praz" data-srow="1" style="display:grid;grid-template-columns:230px 1fr;gap:40px;padding:30px 0;border-top:1px solid rgba(255,255,255,.2);scroll-margin-top:140px">
+        <div>
+          <p style="margin:0;font-size:clamp(26px,3.2vw,34px);font-weight:700;letter-spacing:-.04em;line-height:1;color:#fff">PRAZ</p>
+          <p style="margin:10px 0 0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.55)">Procurement Regulatory Authority of Zimbabwe</p>
+        </div>
+        <p style="margin:0;font-size:16.5px;line-height:1.72;color:rgba(255,255,255,.8);max-width:46em">PRAZ registration, a requirement for doing business with public entities. Get registered, get paid.</p>
+      </div>
+      <div id="vendor" data-srow="1" style="display:grid;grid-template-columns:230px 1fr;gap:40px;padding:30px 0;border-top:1px solid rgba(255,255,255,.2);scroll-margin-top:140px">
+        <div>
+          <p style="margin:0;font-size:clamp(26px,3.2vw,34px);font-weight:700;letter-spacing:-.04em;line-height:1;color:#fff">Vendor</p>
+          <p style="margin:10px 0 0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.55)">Ministry of Finance registration</p>
+        </div>
+        <p style="margin:0;font-size:16.5px;line-height:1.72;color:rgba(255,255,255,.8);max-width:46em">Assistance with registration on supplier databases, tender portals and government procurement platforms, including the vendor number that identifies approved government suppliers.</p>
+      </div>
+      <div style="padding:30px 0 52px;border-top:1px solid rgba(255,255,255,.2);display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap;align-items:center">
+        <p style="margin:0;font-size:20px;line-height:1.6;color:rgba(255,255,255,.9);max-width:34em">Also handled: business licencing, trust registration, tax clearance and company secretarial filings.</p>
+        <a href="mailto:mmazha800@gmail.com" style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;padding:16px 24px;border:1px solid rgba(255,255,255,.4);border-radius:999px;color:#4DD9E8;transition:background .26s ease,color .2s ease" style-hover="background:#00BCD4;color:#06333C">Email us &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-bottom:1px solid #06333C">
+    <div style="max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,40px)">
+      <div style="padding:44px 0 26px">
+        <p style="margin:0 0 14px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#0097AD">Packages</p>
+        <p style="margin:0;font-size:clamp(26px,3.2vw,34px);line-height:1.22;font-weight:600;letter-spacing:-.03em;max-width:22em">Three engagements that cover what most businesses need first.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:20px;padding-bottom:30px">
+        <div style="display:flex;flex-direction:column;gap:14px;padding:28px 26px 26px;background:#F1F6F7;border:1px solid #D7E0E2;transition:border-color .26s ease,transform .26s ease,box-shadow .26s ease" style-hover="border-color:#06333C;transform:translateY(-4px);box-shadow:0 18px 34px -22px rgba(6,51,60,.5)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px">
+            <span style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#D9788C">01</span>
+            <span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#0097AD">Most requested</span>
+          </div>
+          <p style="margin:0;font-size:clamp(23px,2.6vw,27px);font-weight:600;letter-spacing:-.03em;line-height:1.2">Compliance package</p>
+          <p style="margin:0;font-size:15px;line-height:1.65;color:#566A70;flex:1">NSSA, ZIMRA, PRAZ, vendor registration and company registration handled together as one engagement.</p>
+          <a href="MBC%20Contact.dc.html" style="font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding-top:14px;border-top:1px solid #D7E0E2;transition:color .2s ease" style-hover="color:#0097AD">Request a quote &rarr;</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;padding:28px 26px 26px;background:#F1F6F7;border:1px solid #D7E0E2;transition:border-color .26s ease,transform .26s ease,box-shadow .26s ease" style-hover="border-color:#06333C;transform:translateY(-4px);box-shadow:0 18px 34px -22px rgba(6,51,60,.5)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px">
+            <span style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#D9788C">02</span>
+          </div>
+          <p style="margin:0;font-size:clamp(23px,2.6vw,27px);font-weight:600;letter-spacing:-.03em;line-height:1.2">TaRMS registration</p>
+          <p style="margin:0;font-size:15px;line-height:1.65;color:#566A70;flex:1">Tax head registrations, income tax returns, QPDs, VAT, PAYE and tax clearance.</p>
+          <a href="MBC%20Contact.dc.html" style="font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding-top:14px;border-top:1px solid #D7E0E2;transition:color .2s ease" style-hover="color:#0097AD">Request a quote &rarr;</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;padding:28px 26px 26px;background:#F1F6F7;border:1px solid #D7E0E2;transition:border-color .26s ease,transform .26s ease,box-shadow .26s ease" style-hover="border-color:#06333C;transform:translateY(-4px);box-shadow:0 18px 34px -22px rgba(6,51,60,.5)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px">
+            <span style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#D9788C">03</span>
+            <span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#0097AD">Statutory deadline</span>
+          </div>
+          <p style="margin:0;font-size:clamp(23px,2.6vw,27px);font-weight:600;letter-spacing:-.03em;line-height:1.2">Company re-registration</p>
+          <p style="margin:0;font-size:15px;line-height:1.65;color:#566A70;flex:1">Section 303(9) of the Companies and Other Business Entities Act requires all companies to re-register. Failure to register will result in the company being de-registered.</p>
+          <a href="MBC%20Contact.dc.html" style="font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding-top:14px;border-top:1px solid #D7E0E2;transition:color .2s ease" style-hover="color:#0097AD">Request a quote &rarr;</a>
+        </div>
+      </div>
+      <p style="margin:0;padding:22px 0 40px;border-top:1px solid #E2E9EB;font-size:13.5px;color:#7A8B90">Fees are quoted per engagement. Statutory fees payable to the regulator are quoted separately. Enquire at <a href="mailto:mmazha800@gmail.com" style="border-bottom:1px solid #C3D0D3">mmazha800@gmail.com</a>.</p>
+    </div>
+  </section>
+
+  <section style="border-bottom:1px solid #06333C">
+    <div style="max-width:1280px;margin:0 auto;padding:34px clamp(18px,4vw,40px);display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap">
+      <p style="margin:0;font-size:clamp(22px,2.4vw,26px);line-height:1.35;font-weight:600;letter-spacing:-.03em;max-width:30em">Fiscalisation is a compliance obligation too. We deliver it with Fiscal Shift.</p>
+      <a href="MBC%20Fiscalisation.dc.html" style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;padding:15px 24px;border:1px solid #06333C;border-radius:999px;white-space:nowrap;transition:background .26s ease,color .2s ease" style-hover="background:#06333C;color:#fff">Fiscalisation &rarr;</a>
+    </div>
+  </section>
+
+  <footer style="background:#06333C;color:rgba(255,255,255,.7)">
+    <div style="max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,40px)">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap;padding:48px 0 36px;border-bottom:1px solid rgba(255,255,255,.16)">
+        <p style="margin:0;font-size:clamp(26px,3.4vw,40px);line-height:1.1;font-weight:700;letter-spacing:-.04em;color:#fff;max-width:14em">Let&rsquo;s get you compliant.</p>
+        <a href="MBC%20Contact.dc.html" style="padding:16px 30px;border-radius:999px;background:#00BCD4;color:#06333C;font-size:14.5px;font-weight:600;white-space:nowrap;transition:background .24s ease" style-hover="background:#F0A9B7">Book a consultation &rarr;</a>
+      </div>
+    </div>
+    <div style="max-width:1280px;margin:0 auto;padding:44px clamp(18px,4vw,40px) 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:44px">
+      <div>
+        <p style="margin:0;font-size:clamp(24px,2.8vw,30px);font-weight:700;color:#fff;letter-spacing:-.04em">MBC</p>
+        <p style="margin:6px 0 16px;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.45)">Consultancy</p>
+        <p style="margin:0;font-size:14px;line-height:1.65;max-width:26em">A professional services firm incorporated in Zimbabwe, specialising in regulatory compliance, auditing and accounting solutions.</p>
+      </div>
+      <div>
+        <p style="margin:0 0 14px;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#F0A9B7">Services</p>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:14px">
+          <a href="MBC%20Compliance.dc.html" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Statutory &amp; regulatory compliance</a>
+          <a href="MBC%20Other%20Services.dc.html#audit" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Auditing &amp; assurance</a>
+          <a href="MBC%20Other%20Services.dc.html#accounting" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Accounting &amp; financial services</a>
+          <a href="MBC%20Other%20Services.dc.html#tax" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Tax advisory</a>
+          <a href="MBC%20Other%20Services.dc.html#governance" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Corporate governance &amp; secretarial</a>
+          <a href="MBC%20Other%20Services.dc.html#training" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Training &amp; capacity building</a>
+        </div>
+      </div>
+      <div>
+        <p style="margin:0 0 14px;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#F0A9B7">Compliance</p>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:14px">
+          <a href="MBC%20Compliance.dc.html#nssa" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">NSSA</a>
+          <a href="MBC%20Compliance.dc.html#zimra" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">ZIMRA</a>
+          <a href="MBC%20Compliance.dc.html#cipz" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">CIPZ</a>
+          <a href="MBC%20Compliance.dc.html#praz" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">PRAZ</a>
+          <a href="MBC%20Compliance.dc.html#vendor" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Vendor registration</a>
+          <a href="MBC%20Fiscalisation.dc.html" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Fiscalisation</a>
+        </div>
+      </div>
+      <div>
+        <p style="margin:0 0 14px;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#F0A9B7">Contact</p>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:14px">
+          <span>58 Fife Street, Bulawayo</span>
+          <a href="tel:+263774121012" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">(+263) 774 121 012</a>
+          <a href="https://wa.me/263774121012" target="_blank" rel="noopener" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">WhatsApp</a>
+          <a href="mailto:mmazha800@gmail.com" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">mmazha800@gmail.com</a>
+        </div>
+        <a href="MBC%20About.dc.html" style="display:inline-block;margin-top:18px;padding:11px 20px;border:1px solid rgba(255,255,255,.35);border-radius:999px;font-size:13.5px;color:#fff;transition:background .24s ease,color .24s ease" style-hover="background:#fff;color:#06333C">About the firm &rarr;</a>
+      </div>
+    </div>
+    <div style="max-width:1280px;margin:0 auto;padding:18px clamp(18px,4vw,40px) 36px;border-top:1px solid rgba(255,255,255,.14);display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase">
+      <span>&copy; 2026 MBC Consultancy &middot; Zimbabwe</span>
+      <span>Fiscalisation in partnership with Fiscal Shift</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">class Component extends DCLogic {
+  componentDidMount() { this._id = (window.__mbcMountSeq = (window.__mbcMountSeq || 0) + 1); window.__mbcMount = this._id; this._tweens = []; this._triggers = []; this._tries = 0; this._alive = true; this._boot(); }
+  componentWillUnmount() {
+    this._alive = false;
+    clearTimeout(this._t);
+    if (this._onClick) document.removeEventListener('click', this._onClick, true);
+    if (window.__mbcMount !== this._id) return;
+    (this._tweens || []).forEach(t => { try { t.kill(); } catch (e) {} });
+    (this._triggers || []).forEach(t => { try { t.kill(); } catch (e) {} });
+    this._showAll();
+  }
+  _sel() { return this._q('[data-anim],[data-srow="1"],[data-svc="1"],[data-prow="1"]'); }
+  _q(s) { return Array.from(document.querySelectorAll(s)); }
+  _showAll() { this._sel().forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; }); }
+  _boot = () => {
+    if (!this._alive) return;
+    if (!window.gsap || !window.ScrollTrigger) {
+      if (this._tries++ < 60) { this._t = setTimeout(this._boot, 100); } else { this._showAll(); }
+      return;
+    }
+    const n = this._sel().length + this._q('[data-count]').length;
+    if ((n === 0 || n !== this._lastN) && this._tries++ < 80) {
+      this._lastN = n;
+      this._t = setTimeout(this._boot, 150);
+      return;
+    }
+    try { this._run(); } catch (e) { this._showAll(); }
+  }
+  _run() {
+    gsap.registerPlugin(ScrollTrigger);
+    this._tweens = []; this._triggers = [];
+    const track = tw => { if (tw) { this._tweens.push(tw); if (tw.scrollTrigger) this._triggers.push(tw.scrollTrigger); } return tw; };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { this._showAll(); return; }
+    const intro = this._q('[data-anim="line"]');
+    if (intro.length) track(gsap.fromTo(intro, {y: 24, opacity: 0}, {y: 0, opacity: 1, duration: .8, stagger: .09, ease: 'power3.out', clearProps: 'opacity,transform'}));
+    this._q('[data-srow="1"],[data-svc="1"],[data-prow="1"],[data-anim="reveal"]').forEach(el => {
+      track(gsap.fromTo(el, {y: 20, opacity: 0}, {y: 0, opacity: 1, duration: .65, ease: 'power2.out', clearProps: 'opacity,transform', immediateRender: false, scrollTrigger: {trigger: el, start: 'top 95%'}}));
+    });
+    this._q('[data-count]').forEach(el => {
+      const target = parseFloat(el.getAttribute('data-count'));
+      const prefix = el.getAttribute('data-prefix') || '';
+      const suffix = el.getAttribute('data-suffix') || '';
+      const obj = {v: 0};
+      track(gsap.to(obj, {v: target, duration: 1.3, ease: 'power2.out', scrollTrigger: {trigger: el, start: 'top 92%'}, onUpdate: () => { el.textContent = prefix + Math.round(obj.v) + suffix; }}));
+    });
+    const wipe = document.querySelector('[data-wipe="1"]');
+    if (wipe) {
+      gsap.set(wipe, {transformOrigin: 'bottom', scaleY: 0});
+      this._onClick = e => {
+        const a = e.target.closest && e.target.closest('a[href]');
+        if (!a) return;
+        const href = a.getAttribute('href') || '';
+        if (!href.endsWith('.dc.html') || a.target === '_blank' || e.metaKey || e.ctrlKey) return;
+        e.preventDefault();
+        gsap.timeline().set(wipe, {transformOrigin: 'bottom', scaleY: 0})
+          .to(wipe, {scaleY: 1, duration: .42, ease: 'power3.inOut'})
+          .add(() => { window.location.href = href; });
+      };
+      document.addEventListener('click', this._onClick, true);
+    }
+    ScrollTrigger.refresh();
+    setTimeout(() => { if (this._alive && !ScrollTrigger.getAll().length) this._showAll(); }, 1200);
+  }
+  renderVals() { return {}; }
+}</script>
+</body>
+</html>

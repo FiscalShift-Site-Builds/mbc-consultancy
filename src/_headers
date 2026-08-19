@@ -1,0 +1,32 @@
+# Cloudflare Pages response headers.
+# https://developers.cloudflare.com/pages/configuration/headers/
+#
+# {{SCRIPT_HASHES}} is filled in by build.py with the SHA-256 of each inline
+# <script> in the layout, so the CSP can stay strict without 'unsafe-inline'
+# and can never drift out of sync with the markup.
+#
+# 'unsafe-inline' IS allowed for styles: the pages carry inline style
+# attributes for one-off spacing, inherited from the design prototypes. Inline
+# styles cannot execute code, so this is a far smaller concession than the
+# script equivalent — which stays locked to hashes.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+  Cross-Origin-Opener-Policy: same-origin
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; form-action 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' {{SCRIPT_HASHES}} https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none'
+
+# Filenames are not fingerprinted, so fonts cache hard while code revalidates.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/img/*
+  Cache-Control: public, max-age=604800
+
+/assets/css/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/assets/js/*
+  Cache-Control: public, max-age=3600, must-revalidate
