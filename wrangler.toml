@@ -1,0 +1,28 @@
+# Cloudflare Pages configuration.
+# https://developers.cloudflare.com/pages/functions/wrangler-configuration/
+#
+# Keeping this in the repo means the build settings are version-controlled rather
+# than living only in the dashboard. Cloudflare reads it on each deployment.
+
+name = "mbc-consultancy"
+compatibility_date = "2026-08-19"
+pages_build_output_dir = "site"
+
+# NOTE ON LAYOUT — do not "tidy" this.
+#   site/       the deployed output. Committed, so no build command is needed.
+#   functions/  MUST stay at the repository root, NOT inside site/. Cloudflare
+#               reads Pages Functions from the repo root and maps the file tree
+#               onto URL paths, so functions/api/contact.js serves /api/contact.
+#               Moving it into site/ silently breaks the contact form.
+#   src/        authoring source; build.py assembles it into site/.
+#
+# Secrets are NOT set here — they would be committed. Add them under
+#   Workers & Pages -> mbc-consultancy -> Settings -> Variables and Secrets
+# as documented in docs/DEPLOY.md §3:
+#   RESEND_API_KEY    secret, required for the contact form to send
+#   MAIL_TO           text,   where enquiries are delivered
+#   MAIL_FROM         text,   optional once a domain is verified
+#   TURNSTILE_SECRET  secret, optional; the check is skipped when absent
+#
+# Until RESEND_API_KEY and MAIL_TO exist the form returns 503 by design and the
+# page offers the visitor a WhatsApp hand-off carrying everything they typed.

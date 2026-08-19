@@ -1,0 +1,57 @@
+name: check
+
+# site/ is generated from src/ by build.py and committed, so Cloudflare needs no
+# build step. That convenience has one failure mode: someone edits site/ directly,
+# or edits src/ and forgets to rebuild, and the deployed site silently stops
+# matching its source. The drift check below is the main thing this workflow buys.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Link, anchor, asset and heading checks
+        run: python3 build.py --check
+
+      - name: site/ must match what src/ builds
+        run: |
+          if ! git diff --quiet -- site; then
+            echo "::error::site/ is out of sync with src/."
+            echo "Run 'python3 build.py' and commit the result."
+            echo "Edit src/, never site/ — the build overwrites it."
+            echo
+            git diff --stat -- site
+            exit 1
+          fi
+          echo "site/ is in sync with src/"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: JavaScript parses
+        run: |
+          node --check src/assets/js/mbc.js
+          # The Pages Function is an ES module; --check needs the extension to say so.
+          cp functions/api/contact.js "$RUNNER_TEMP/contact.mjs"
+          node --check "$RUNNER_TEMP/contact.mjs"
+
+      - name: No secrets committed
+        run: |
+          # Env-var NAMES are expected in functions/ and docs/; values are not.
+          if git grep -InE "(re_[A-Za-z0-9]{20,}|0x[A-Fa-f0-9]{40}|-----BEGIN [A-Z ]*PRIVATE KEY)" -- . ; then
+            echo "::error::Something that looks like a credential is committed."
+            exit 1
+          fi
+          echo "no credential-shaped strings found"

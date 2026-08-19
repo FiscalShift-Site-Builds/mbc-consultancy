@@ -1,0 +1,12 @@
+# site/ is build output from src/ via build.py. Marking it generated collapses it
+# by default in pull-request diffs and keeps it out of language statistics, so
+# review attention lands on src/ where edits actually belong.
+site/** linguist-generated=true
+
+# The design prototypes are kept as provenance, not as code to review.
+project/** linguist-vendored=true
+
+* text=auto eol=lf
+*.woff2 binary
+*.png binary
+*.ico binary

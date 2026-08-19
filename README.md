@@ -13,6 +13,31 @@ python3 build.py --check      # regenerate site/ and verify it
 python3 tools/serve.py        # preview at http://127.0.0.1:8000
 ```
 
+## Deploying
+
+Hosted on **Cloudflare Pages**. Settings live in [wrangler.toml](wrangler.toml),
+so the dashboard needs almost nothing:
+
+| Setting | Value |
+| --- | --- |
+| Build command | *(leave empty)* |
+| Build output directory | `site` |
+| Root directory | *(repository root)* |
+
+`site/` is committed, so there is no build step on the host. Every push to `main`
+deploys; pull requests get a preview URL.
+
+> **`functions/` must stay at the repository root, not inside `site/`.** Cloudflare
+> reads Pages Functions from the repo root and maps the file tree onto URL paths,
+> so `functions/api/contact.js` serves `/api/contact`. Moving it breaks the form.
+
+Full walkthrough, including connecting the contact form and turning on Turnstile:
+**[docs/DEPLOY.md](docs/DEPLOY.md)**.
+
+CI ([`.github/workflows/check.yml`](.github/workflows/check.yml)) runs the link and
+heading checks, confirms `site/` still matches what `src/` builds, parses both JS
+files, and fails on anything credential-shaped.
+
 ## Layout
 
 ```
