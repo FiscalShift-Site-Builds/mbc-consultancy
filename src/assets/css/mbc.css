@@ -1528,6 +1528,30 @@ p {
   margin: 0 auto;
 }
 
+/* Prose + CTA sat side by side in a dark band. Was duplicated inline CSS on two
+   pages; extracted because an inline justify-content cannot be overridden from
+   the stylesheet, and the mobile centring needs to override it. */
+.band-cta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+/* A row of buttons (thanks, 404). */
+.btnrow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* `.measure` is a hook with no base styles — it marks a block whose own
+   max-width can leave it narrower than its column, which only matters under the
+   mobile centring below (a centred line inside a left-hugging box still reads as
+   off-centre). Deliberately a class rather than [style*="max-width"], which
+   would also catch img/svg and is sensitive to attribute whitespace. */
+
 .crosslink__text {
   font-size: clamp(22px, 2.4vw, 26px);
   line-height: 1.35;
@@ -2260,14 +2284,30 @@ p {
     font-size: 26px;
   }
 
+  /* This border swap assumes the two links have stacked, but flex: 1 1 200px
+     only wraps below ~436px — so from 436-760px they sat side by side with the
+     divider gone and a stray top rule above the right one only. Force the stack
+     so the layout matches what the rule assumes. */
+  .actionsplit > a {
+    flex: 1 1 100%;
+  }
+
   .actionsplit > a + a {
     border-left: none;
     border-top: 1px solid var(--line-200);
     padding-left: 4px;
   }
 
+  /* Symmetric, not zero: .stats has no gap, so this padding IS the gutter
+     between 2-up cells. Zeroing it would make adjacent centred labels touch. */
   .stat {
-    padding-right: 12px;
+    padding: 32px 12px;
+  }
+
+  /* 3 columns at 620px with 4 cells leaves one centred cell alone in row 2,
+     which reads as a mistake once centred. 200px gives a clean 2x2. */
+  .stats {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
 
@@ -2293,17 +2333,225 @@ p {
     gap: 14px;
   }
 
-  .reach__cell {
-    padding-right: 0;
-  }
-
   .footer__cols {
     gap: 32px;
   }
 }
 
 /* --------------------------------------------------------------------------
-   24. Pointer & touch
+   24. Mobile centring
+   All text centres at 760px and below. Sits after the width breakpoints above
+   so it wins ties against them, and before the reduced-motion section so that
+   still overrides it.
+
+   `screen and` is load-bearing. A bare max-width query defaults to media type
+   `all` and is evaluated against the PAGE BOX when printing — A4 is 794px so it
+   normally misses, but printing at 150% shrinks the box under 760 and would
+   centre the whole printed document.
+
+   text-align does not move flex or grid items, so every container holding free
+   space needs justify-content separately. That, and keeping each text box
+   symmetric, is most of what follows.
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 760px) {
+  body {
+    text-align: center;
+  }
+
+  /* -- Containers whose children would stay left-packed ------------------- */
+  .topbar,
+  .masthead,
+  .nav,
+  .footer__band,
+  .footer__legal,
+  .closer,
+  .crosslink,
+  .band-cta,
+  .btnrow,
+  .pkg__meta,
+  .chooser__row,
+  .portal__main,
+  .form__actions {
+    justify-content: center;
+  }
+
+  /* .nav, NOT .nav__scroller. The scroller's pills are flex: 0 0 auto and
+     overflow only on the end side, so centring there would push the first pill
+     somewhere genuinely unscrollable. One level up it is inert while the strip
+     overflows and a fix in the narrow window where it does not. Same reason
+     .js-swipe .authtrack is left alone. */
+
+  .svccard__cta,
+  .authlist__cta {
+    align-self: center;
+  }
+
+  /* Needs its own rule: .js-swipe .authlist__cta (0-2-0) beats .authlist__cta. */
+  .js-swipe .authlist__cta {
+    justify-self: center;
+  }
+
+  /* -- Boxes narrower than their column ----------------------------------- */
+  /* A centred line inside a left-hugging box still reads as off-centre. Block
+     children only — an auto margin on a FLEX item absorbs free space before
+     justify-content applies, which would rebuild the space-between look we just
+     removed (this is why .footer__band-title and .crosslink__text are absent).
+     Inert at 390px: the narrowest cap here is 364px against 354px available, so
+     this only pays off from ~400px up. */
+  .lede,
+  .lede--lg,
+  .section-head__title,
+  .footer__blurb,
+  .deflist__desc,
+  .closer__title,
+  .measure {
+    margin-inline: auto;
+  }
+
+  /* -- Symmetry ----------------------------------------------------------- */
+  /* The base rules pad only one side, which pulls centred text off the axis.
+     .reach has no `gap` and is 2-up from ~528px, so this padding is also the
+     only gutter between adjacent cells — symmetric, never zero. */
+  .reach__cell {
+    padding: 34px 16px;
+  }
+
+  /* Single-column from 900px down, so there is no neighbour to collide with. */
+  .portal {
+    padding: 26px 0;
+  }
+
+  /* -- Carousel accent ---------------------------------------------------- */
+  /* Symmetric bracket rather than moving the border to the top edge: this
+     border is the ONLY active-card indicator in swipe mode (the 0.18 dimming
+     was dropped because it made the peeking card unreadable), and five 2px top
+     rules across gap-separated cards would read as broken table rules with the
+     first and last clipped by the edge-fade mask. */
+  .js-swipe .authitem {
+    padding: 4px 16px;
+    border-left: 2px solid var(--line-400);
+    border-right: 2px solid var(--line-400);
+  }
+
+  .js-swipe .authitem.is-current {
+    border-left-color: var(--cyan-500);
+    border-right-color: var(--cyan-500);
+  }
+
+  /* scroll-snap-align: start stays. That is card-to-scrollport alignment, and
+     it produces the peek that IS the swipe affordance; changing it also
+     perturbs edgeState()'s end detection and the current-card ratio test. */
+
+  /* -- Motion that pointed sideways --------------------------------------- */
+  /* A ±22px horizontal entrance is a visible wobble into a symmetric
+     composition. Vertical instead. .is-in (0-3-0) still wins and still lands on
+     transform: none. */
+  .js [data-reveal='edge'],
+  .js [data-reveal='edge-r'] {
+    transform: translate3d(0, 16px, 0);
+  }
+
+  /* Rules grow from the middle out. */
+  .js .srow::before,
+  .js .prow::before,
+  .js .portal::before,
+  .js .svc::before {
+    transform-origin: center;
+  }
+
+  /* The two progress bars deliberately KEEP transform-origin: left center.
+     .authbar__fill tracks the carousel's horizontal scroll, so its origin must
+     match the gesture or the indicator desyncs from the thumb; .rprog__fill is
+     reading progress. A bar growing out of its own middle reads as an
+     indeterminate loader. Do not "fix" these for consistency. */
+
+  /* A lateral nudge on a centred pill reads as misalignment, not a press — and
+     :active fires on real phones. Match the .btn:active idiom instead. */
+  .chooser__row:active {
+    transform: scale(0.98);
+  }
+
+  /* A 760px-wide laptop window matches both this query and (hover: hover), so
+     the indent affordance became a sideways wobble. Colour only. */
+  .ilist > a:hover {
+    padding-left: 0;
+  }
+
+  /* The last left/right bias on the home page's first screen. Not
+     translateX(-50%) — bloomDrift animates transform and would overwrite it. */
+  .hero-bloom {
+    left: 50%;
+    right: auto;
+    margin-left: -260px;
+  }
+
+  /* -- Trailing letter-spacing -------------------------------------------- */
+  /* Browsers apply letter-spacing after the final glyph and centring includes
+     that trailing space, so a tracked label lands ~1px left of true centre
+     while a negative-tracked heading lands ~1px right. Stacked and centred, an
+     eyebrow and its headline end up ~2px out of alignment with each other in
+     opposite directions — visible at 3x DPR. Cancel the trailing space. */
+  /* Compensated with PADDING, not margin: margin would clobber the
+     `margin-inline: auto` above for anything in both lists (.display,
+     .closer__title, .section-head__title) and stop them centring at all.
+     Padding shifts the line inside the box by half its value, leaving margins
+     free — and none of these carry a background or border to disturb. Positive
+     tracking overhangs right, so pad left; negative tracking is the reverse. */
+  .eyebrow,
+  .stat__label,
+  .field__label,
+  .footer__heading,
+  .footer__sub {
+    padding-left: 0.2em;
+  }
+
+  .display,
+  .display--home,
+  .closer__title,
+  .authgrid__title,
+  .section-head__title,
+  .footer__band-title {
+    padding-right: 0.04em;
+  }
+
+  /* -- Deliberate exceptions ---------------------------------------------- */
+  /* Typing into a centre-aligned field is disorienting and unlike any other
+     form on the web. Labels and error messages still centre. */
+  .input,
+  .textarea {
+    text-align: left;
+  }
+
+  /* Centre the SET as a block, and let every row share one left edge inside it.
+     `justify-items: center` was wrong: it shrink-wraps each row to its own label
+     width and centres them individually, so the eight checkboxes land at eight
+     different x positions — a 78px zigzag with no edge to scan down. Sizing the
+     grid to max-content and centring it with auto margins keeps the group on the
+     page axis while the boxes stay aligned with each other. */
+  .checkset {
+    grid-template-columns: 1fr;
+    width: max-content;
+    max-width: 100%;
+    justify-items: start;
+    margin-inline: auto;
+  }
+
+  .check {
+    text-align: left;
+  }
+
+  /* -- Inheritance hygiene ------------------------------------------------ */
+  /* Both are absolutely-positioned 1px clipped boxes; centring makes their
+     overflow spill both ways instead of one. (.skip is shrink-to-fit, so
+     centring is a no-op there and it is left alone.) */
+  .sr-only,
+  .hp {
+    text-align: left;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   25. Pointer & touch
    Every :hover that moves or fills something is guarded by (hover: hover)
    above, because on touch :hover latches after a tap and leaves the element
    stuck. That removes all discretionary feedback from a tap, so press states
@@ -2398,7 +2646,7 @@ p {
 }
 
 /* --------------------------------------------------------------------------
-   25. Accessibility & preferences
+   26. Accessibility & preferences
    -------------------------------------------------------------------------- */
 
 /* Every interactive element gets a visible keyboard ring — the prototypes only
@@ -2525,7 +2773,7 @@ p {
 }
 
 /* --------------------------------------------------------------------------
-   26. Print
+   27. Print
    -------------------------------------------------------------------------- */
 @media print {
   .curtain,
@@ -2556,7 +2804,9 @@ p {
 
   .js-swipe .authitem {
     border-left: none !important;
+    border-right: none !important;
     padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   body {
