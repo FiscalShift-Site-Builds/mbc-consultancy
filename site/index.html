@@ -93,6 +93,11 @@
       </nav>
     </div>
   </div>
+  <!-- Reading progress. Sits over the header's existing 1px border so it adds
+       no height, and is aria-hidden because a progressbar role updated on
+       scroll would talk over a screen reader continuously. Driven entirely by
+       CSS scroll-timeline; absent where that is unsupported. -->
+  <div class="rprog" aria-hidden="true"><span class="rprog__fill"></span></div>
 </header>
 
 
@@ -127,21 +132,21 @@
 
 <section class="band">
   <div class="wrap">
-    <h2 class="eyebrow" style="padding:48px 0 26px" data-reveal>Three ways we work with you</h2>
-    <div class="svcgrid">
-      <a class="svccard" href="/compliance" data-reveal>
+    <h2 class="eyebrow" style="padding:48px 0 26px" data-reveal="near">Three ways we work with you</h2>
+    <div class="svcgrid" data-stagger="110">
+      <a class="svccard" href="/compliance" data-reveal="lift">
         <span class="svccard__num">01</span>
         <h3 class="svccard__title">Compliance</h3>
         <span class="svccard__body">NSSA, ZIMRA, CIPZ, PRAZ and Ministry of Finance vendor registration &mdash; registrations, returns and renewals kept current.</span>
         <span class="svccard__cta">Explore compliance <span class="arw" aria-hidden="true">&rarr;</span></span>
       </a>
-      <a class="svccard" href="/services#accounting" data-reveal>
+      <a class="svccard" href="/services#accounting" data-reveal="lift">
         <span class="svccard__num">02</span>
         <h3 class="svccard__title">Accounting</h3>
         <span class="svccard__body">Bookkeeping, IFRS financial statements, management accounts and payroll &mdash; alongside audit, tax advisory and governance.</span>
         <span class="svccard__cta">Explore accounting <span class="arw" aria-hidden="true">&rarr;</span></span>
       </a>
-      <a class="svccard" href="/fiscalisation" data-reveal>
+      <a class="svccard" href="/fiscalisation" data-reveal="lift">
         <span class="svccard__num">03</span>
         <h3 class="svccard__title">Fiscalisation</h3>
         <span class="svccard__body">Software-only fiscalisation with Fiscal Shift, connected to ZIMRA&rsquo;s FDMS in real time. No hardware to buy.</span>
@@ -162,27 +167,38 @@
             <div class="authbar__fill"></div>
           </div>
         </div>
+        <!-- The track wrapper is layout-neutral on desktop: .authlist is a
+             column flex container with no gap, so one block child holding the
+             five rows lays out identically to the five rows themselves. Below
+             1041px JS turns the track into a swipe carousel. The chevrons live
+             in HTML rather than being built by script, so script still never
+             creates content; they are a pointer affordance only, which is why
+             they stay out of the accessibility tree. -->
         <div class="authlist">
-          <div class="authitem">
-            <h3 class="authitem__name">NSSA</h3>
-            <p class="authitem__desc">Registration, contributions, compliance reporting and exemption applications.</p>
+          <button class="authnav authnav--prev" type="button" tabindex="-1" aria-hidden="true">&#9664;</button>
+          <div class="authtrack">
+            <div class="authitem">
+              <h3 class="authitem__name">NSSA</h3>
+              <p class="authitem__desc">Registration, contributions, compliance reporting and exemption applications.</p>
+            </div>
+            <div class="authitem">
+              <h3 class="authitem__name">ZIMRA</h3>
+              <p class="authitem__desc">PAYE, VAT, corporate tax, customs and excise, and dispute resolution.</p>
+            </div>
+            <div class="authitem">
+              <h3 class="authitem__name">CIPZ</h3>
+              <p class="authitem__desc">Company registration and re-registration.</p>
+            </div>
+            <div class="authitem">
+              <h3 class="authitem__name">PRAZ</h3>
+              <p class="authitem__desc">Procurement registration for public-sector work.</p>
+            </div>
+            <div class="authitem">
+              <h3 class="authitem__name">Vendor</h3>
+              <p class="authitem__desc">Ministry of Finance supplier databases, tender portals and procurement platforms.</p>
+            </div>
           </div>
-          <div class="authitem">
-            <h3 class="authitem__name">ZIMRA</h3>
-            <p class="authitem__desc">PAYE, VAT, corporate tax, customs and excise, and dispute resolution.</p>
-          </div>
-          <div class="authitem">
-            <h3 class="authitem__name">CIPZ</h3>
-            <p class="authitem__desc">Company registration and re-registration.</p>
-          </div>
-          <div class="authitem">
-            <h3 class="authitem__name">PRAZ</h3>
-            <p class="authitem__desc">Procurement registration for public-sector work.</p>
-          </div>
-          <div class="authitem">
-            <h3 class="authitem__name">Vendor</h3>
-            <p class="authitem__desc">Ministry of Finance supplier databases, tender portals and procurement platforms.</p>
-          </div>
+          <button class="authnav authnav--next" type="button" tabindex="-1" aria-hidden="true">&#9654;</button>
           <a class="btn btn--outline authlist__cta" href="/compliance">See what each involves <span class="arw" aria-hidden="true">&rarr;</span></a>
         </div>
       </div>
@@ -193,23 +209,23 @@
 <section class="band--dark">
   <div class="wrap">
     <div style="padding:56px 0 26px">
-      <h2 class="eyebrow eyebrow--on-dark-rose" style="margin-bottom:22px" data-reveal>Technology partner &mdash; Fiscal Shift</h2>
-      <p class="display" style="color:#fff;font-size:clamp(32px,5.2vw,56px);max-width:16em" data-reveal>Fiscalisation without the hardware.</p>
+      <h2 class="eyebrow eyebrow--on-dark-rose" style="margin-bottom:22px" data-reveal="near">Technology partner &mdash; Fiscal Shift</h2>
+      <p class="display" style="color:#fff;font-size:clamp(32px,5.2vw,56px);max-width:16em" data-reveal="deep">Fiscalisation without the hardware.</p>
     </div>
-    <div class="stats">
-      <div class="stat">
+    <div class="stats" data-stagger="80">
+      <div class="stat" data-reveal="near">
         <p class="stat__value">Real time</p>
         <p class="stat__label">transmission to FDMS</p>
       </div>
-      <div class="stat">
+      <div class="stat" data-reveal="near">
         <p class="stat__value">Rapid</p>
         <p class="stat__label">go-live after sign-up</p>
       </div>
-      <div class="stat">
+      <div class="stat" data-reveal="near">
         <p class="stat__value"><span data-count="8">8</span></p>
         <p class="stat__label">accounting systems supported</p>
       </div>
-      <div class="stat">
+      <div class="stat" data-reveal="near">
         <p class="stat__value">Ongoing</p>
         <p class="stat__label">FDMS monitoring</p>
       </div>
@@ -224,7 +240,7 @@
 <section>
   <div class="closer">
     <div>
-      <h2 class="closer__title" data-reveal>Start with a review of where you stand.</h2>
+      <h2 class="closer__title" data-reveal="deep">Start with a review of where you stand.</h2>
       <p class="closer__meta" data-reveal>58 Fife Street, Bulawayo &middot; <a href="tel:+263774121012">(+263)&nbsp;774&nbsp;121&nbsp;012</a> &middot; <a href="mailto:mmazha800@gmail.com">mmazha800@gmail.com</a></p>
     </div>
     <a class="btn btn--solid" style="padding:17px 30px" href="/contact">Book a consultation <span class="arw" aria-hidden="true">&rarr;</span></a>

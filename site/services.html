@@ -93,6 +93,11 @@
       </nav>
     </div>
   </div>
+  <!-- Reading progress. Sits over the header's existing 1px border so it adds
+       no height, and is aria-hidden because a progressbar role updated on
+       scroll would talk over a screen reader continuously. Driven entirely by
+       CSS scroll-timeline; absent where that is unsupported. -->
+  <div class="rprog" aria-hidden="true"><span class="rprog__fill"></span></div>
 </header>
 
 
@@ -119,9 +124,9 @@
   </div>
 </section>
 
-<section class="band--hair" id="audit" style="scroll-margin-top:140px">
+<section class="band--hair" id="audit">
   <div class="wrap">
-    <div class="svc" data-reveal>
+    <div class="svc" data-reveal="edge">
       <div>
         <p class="eyebrow eyebrow--rose">01</p>
         <h2 class="svc__title">Auditing &amp; assurance</h2>
@@ -144,9 +149,9 @@
   </div>
 </section>
 
-<section class="band--hair band--tint" id="accounting" style="scroll-margin-top:140px">
+<section class="band--hair band--tint" id="accounting">
   <div class="wrap">
-    <div class="svc" data-reveal>
+    <div class="svc" data-reveal="edge">
       <div>
         <p class="eyebrow eyebrow--rose">02</p>
         <h2 class="svc__title">Accounting &amp; financial services</h2>
@@ -173,9 +178,9 @@
   </div>
 </section>
 
-<section class="band--hair" id="tax" style="scroll-margin-top:140px">
+<section class="band--hair" id="tax">
   <div class="wrap">
-    <div class="svc" data-reveal>
+    <div class="svc" data-reveal="edge">
       <div>
         <p class="eyebrow eyebrow--rose">03</p>
         <h2 class="svc__title">Tax advisory</h2>
@@ -198,9 +203,9 @@
   </div>
 </section>
 
-<section class="band--hair band--tint" id="governance" style="scroll-margin-top:140px">
+<section class="band--hair band--tint" id="governance">
   <div class="wrap">
-    <div class="svc" data-reveal>
+    <div class="svc" data-reveal="edge">
       <div>
         <p class="eyebrow eyebrow--rose">04</p>
         <h2 class="svc__title">Corporate governance &amp; secretarial</h2>
@@ -223,9 +228,9 @@
   </div>
 </section>
 
-<section class="band" id="training" style="scroll-margin-top:140px">
+<section class="band" id="training">
   <div class="wrap">
-    <div class="svc" data-reveal>
+    <div class="svc" data-reveal="edge">
       <div>
         <p class="eyebrow eyebrow--rose">05</p>
         <h2 class="svc__title">Training &amp; capacity building</h2>
@@ -246,7 +251,7 @@
 
 <section>
   <div class="closer">
-    <h2 class="closer__title" data-reveal>Tell us what the business needs. We will scope it.</h2>
+    <h2 class="closer__title" data-reveal="deep">Tell us what the business needs. We will scope it.</h2>
     <a class="btn btn--outline btn--mono" href="/contact">Book a consultation <span class="arw" aria-hidden="true">&rarr;</span></a>
   </div>
 </section>

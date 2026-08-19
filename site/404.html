@@ -94,6 +94,11 @@
       </nav>
     </div>
   </div>
+  <!-- Reading progress. Sits over the header's existing 1px border so it adds
+       no height, and is aria-hidden because a progressbar role updated on
+       scroll would talk over a screen reader continuously. Driven entirely by
+       CSS scroll-timeline; absent where that is unsupported. -->
+  <div class="rprog" aria-hidden="true"><span class="rprog__fill"></span></div>
 </header>
 
 

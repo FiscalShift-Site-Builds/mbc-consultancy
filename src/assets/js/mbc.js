@@ -37,6 +37,77 @@
     });
   }
 
+  /* `vh` resolves against the LARGE viewport, so on a mobile browser with a
+     collapsing toolbar a 100vh box is taller than what you can see. `svh` is
+     the small-viewport unit: stable, and guaranteed to fit at the worst case.
+     Deliberately not `dvh` — that changes during scroll, which would relayout
+     a pinned element mid-scroll. */
+  var vhUnit = '100vh';
+  try {
+    if (window.CSS && CSS.supports && CSS.supports('height', '100svh')) {
+      vhUnit = '100svh';
+    }
+  } catch (e) {}
+
+  /* ------------------------------------------------------------------------
+     One scroll listener, one rAF, all subscribers — instead of a listener and
+     a frame loop per effect. Each callback is isolated so a throw in one
+     cannot silently stop the others (the global error handler only restores
+     visibility; it does not restore scroll behaviour).
+     ------------------------------------------------------------------------ */
+  var scrollFns = [];
+  var scrollRaf = null;
+  var scrollBound = false;
+
+  function pumpScroll() {
+    if (scrollRaf) return;
+    scrollRaf = requestAnimationFrame(function () {
+      scrollRaf = null;
+      for (var i = 0; i < scrollFns.length; i++) {
+        try {
+          scrollFns[i]();
+        } catch (e) {}
+      }
+    });
+  }
+
+  function onScrollFrame(fn) {
+    scrollFns.push(fn);
+    if (scrollBound) return;
+    scrollBound = true;
+    window.addEventListener('scroll', pumpScroll, { passive: true });
+  }
+
+  /* ------------------------------------------------------------------------
+     Horizontal-strip helpers, shared by the nav pill strip and the authorities
+     carousel so both behave identically.
+     ------------------------------------------------------------------------ */
+  function nudge(scroller, dir) {
+    var step = Math.max(140, Math.round(scroller.clientWidth * 0.7));
+    scroller.scrollBy({
+      left: dir * step,
+      behavior: reduceMotion ? 'auto' : 'smooth'
+    });
+  }
+
+  /* Stamps the --scrollable/--at-start/--at-end classes that drive the edge
+     fade masks, enables or disables the chevrons, and returns scroll progress
+     0..1 so a caller can drive a progress bar from it. */
+  function edgeState(scroller, host, prefix, prev, next) {
+    var overflow = scroller.scrollWidth - scroller.clientWidth;
+    var scrollable = overflow > 2;
+    var x = scroller.scrollLeft;
+
+    host.classList.toggle(prefix + '--scrollable', scrollable);
+    host.classList.toggle(prefix + '--at-start', x <= 2);
+    host.classList.toggle(prefix + '--at-end', x >= overflow - 2);
+
+    if (prev) prev.disabled = !scrollable || x <= 2;
+    if (next) next.disabled = !scrollable || x >= overflow - 2;
+
+    return overflow > 0 ? Math.min(1, Math.max(0, x / overflow)) : 1;
+  }
+
   /* ------------------------------------------------------------------------
      Header height -> --header-h-live, so anchor targets clear the sticky bar.
      The prototype hard-coded scroll-margin-top:140px, which was wrong on
@@ -79,25 +150,11 @@
     var next = nav.querySelector('.nav__arrow--next');
 
     function update() {
-      var overflow = scroller.scrollWidth - scroller.clientWidth;
-      var scrollable = overflow > 2;
-      nav.classList.toggle('nav--scrollable', scrollable);
-
-      var x = scroller.scrollLeft;
-      nav.classList.toggle('nav--at-start', x <= 2);
-      nav.classList.toggle('nav--at-end', x >= overflow - 2);
-
-      if (prev) prev.disabled = !scrollable || x <= 2;
-      if (next) next.disabled = !scrollable || x >= overflow - 2;
+      edgeState(scroller, nav, 'nav', prev, next);
     }
 
-    function nudge(dir) {
-      var step = Math.max(140, Math.round(scroller.clientWidth * 0.7));
-      scroller.scrollBy({ left: dir * step, behavior: reduceMotion ? 'auto' : 'smooth' });
-    }
-
-    if (prev) prev.addEventListener('click', function () { nudge(-1); });
-    if (next) next.addEventListener('click', function () { nudge(1); });
+    if (prev) prev.addEventListener('click', function () { nudge(scroller, -1); });
+    if (next) next.addEventListener('click', function () { nudge(scroller, 1); });
 
     // Bring the current page's pill fully into view, so you can see where you
     // are without swiping. Scrolls the minimum distance that clears it —
@@ -116,11 +173,17 @@
       var right = left + current.offsetWidth;
       var maxScroll = scroller.scrollWidth - scroller.clientWidth;
       if (maxScroll <= 0) return;
+      var to = null;
       if (right > scroller.clientWidth - pad) {
-        scroller.scrollLeft = Math.min(right - scroller.clientWidth + pad, maxScroll);
+        to = Math.min(right - scroller.clientWidth + pad, maxScroll);
       } else if (left < pad) {
-        scroller.scrollLeft = 0;
+        to = 0;
       }
+      if (to === null || Math.abs(scroller.scrollLeft - to) < 2) return;
+      // Explicit 'auto' beats the stylesheet's scroll-behavior: smooth. Without
+      // it the strip visibly slides sideways on load, then again when the
+      // webfont swaps — which on a slow link reads as a glitch.
+      scroller.scrollTo({ left: to, behavior: 'auto' });
     }
 
     function sync() {
@@ -129,7 +192,16 @@
     }
 
     scroller.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', sync);
+
+    // Width only. A mobile URL bar collapsing fires resize, and re-running
+    // showCurrent() there would snap the strip back and undo the user's swipe.
+    var lastW = window.innerWidth;
+    window.addEventListener('resize', function () {
+      if (window.innerWidth === lastW) return;
+      lastW = window.innerWidth;
+      sync();
+    });
+
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(sync).catch(function () {});
     }
@@ -146,10 +218,13 @@
       return;
     }
 
-    // Hero lines rise immediately on load, staggered.
+    // Hero lines rise immediately on load, staggered. Capped: the home page has
+    // 12 of these, and an uncapped 90ms step put the last one 990ms out and
+    // still settling ~1.8s after DOMContentLoaded — on a slow link that is the
+    // primary call to action arriving seconds late.
     var rise = all('[data-rise]');
     rise.forEach(function (el, i) {
-      el.style.transitionDelay = i * 90 + 'ms';
+      el.style.transitionDelay = Math.min(i, 5) * 60 + 'ms';
     });
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
@@ -158,6 +233,37 @@
         });
       });
     });
+
+    /* Stagger a group's direct children, restarting the count on each new
+       visual row. A stacked single-column layout therefore gets 0ms across the
+       board and the stagger never reads as lag on a phone — measured, so it
+       needs no breakpoint. */
+    function assignStagger(group) {
+      var step = parseInt(group.getAttribute('data-stagger'), 10);
+      if (isNaN(step)) step = 70;
+      var rowTop = null;
+      var idx = 0;
+      all('[data-reveal]', group).forEach(function (el) {
+        if (el.parentNode !== group) return;
+        var top = Math.round(el.offsetTop);
+        if (rowTop === null || Math.abs(top - rowTop) > 4) {
+          rowTop = top;
+          idx = 0;
+        }
+        el.style.transitionDelay = Math.min(idx, 5) * step + 'ms';
+        idx++;
+      });
+    }
+
+    function staggerAll() {
+      all('[data-stagger]').forEach(assignStagger);
+    }
+
+    staggerAll();
+    // The webfont swap changes offsetTop, and therefore row membership.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(staggerAll).catch(function () {});
+    }
 
     var targets = all('[data-reveal]');
     if (!targets.length) return;
@@ -242,68 +348,207 @@
     if (!stage) return;
 
     var sticky = stage.querySelector('.authstage__sticky');
+    var list = stage.querySelector('.authlist');
+    var track = stage.querySelector('.authtrack');
     var items = all('.authitem', stage);
     var fill = stage.querySelector('.authbar__fill');
+    var prev = stage.querySelector('.authnav--prev');
+    var next = stage.querySelector('.authnav--next');
     if (!sticky || !items.length) return;
 
-    var active = false;
-    var raf = null;
+    var root = document.documentElement;
+    var mode = null; // null (plain stack) | 'pin' | 'swipe'
+    var geom = null; // cached stage geometry, so no per-frame layout read
+    var trackIO = null;
+    var onTrackScroll = null;
+    var prevClick = null;
+    var nextClick = null;
 
-    function enable() {
-      if (active) return;
-      active = true;
-      document.documentElement.classList.add('js-scene');
+    var EDGE_CLASSES = [
+      'authlist--scrollable',
+      'authlist--at-start',
+      'authlist--at-end'
+    ];
+
+    /* --- The only two writers of the scene's visual state. Both modes drive
+       these, so a phone user who swipes to the last card lands on exactly the
+       state a desktop user reaches by scrolling the pin. ------------------- */
+    function setProgress(p) {
+      if (fill) fill.style.setProperty('--p', String(Math.min(1, Math.max(0, p))));
+    }
+
+    function lightUpTo(p) {
+      // All lit by 85% of the travel, leaving a beat at the end.
+      var span = 0.85;
+      items.forEach(function (el, i) {
+        el.classList.toggle('is-lit', p >= (i / items.length) * span);
+      });
+    }
+
+    /* --- Teardown: always back to a plain, fully visible stack ------------ */
+    function reset() {
+      if (mode === 'pin') {
+        sticky.style.position = '';
+        sticky.style.top = '';
+        stage.style.height = '';
+      } else if (mode === 'swipe') {
+        if (track) {
+          track.removeAttribute('tabindex');
+          track.removeAttribute('role');
+          track.removeAttribute('aria-label');
+          if (onTrackScroll) track.removeEventListener('scroll', onTrackScroll);
+        }
+        if (trackIO) {
+          trackIO.disconnect();
+          trackIO = null;
+        }
+        if (prev && prevClick) prev.removeEventListener('click', prevClick);
+        if (next && nextClick) next.removeEventListener('click', nextClick);
+        if (list) {
+          EDGE_CLASSES.forEach(function (c) { list.classList.remove(c); });
+        }
+        items.forEach(function (el) { el.classList.remove('is-current'); });
+      }
+      root.classList.remove('js-scene');
+      root.classList.remove('js-swipe');
+      mode = null;
+      geom = null;
+      items.forEach(function (el) { el.classList.add('is-lit'); });
+      setProgress(1);
+    }
+
+    /* --- Pinned scene (desktop) ------------------------------------------- */
+
+    /* Cached on enable and on resize. offsetTop is relative to the offsetParent,
+       so walk the chain for a document coordinate. Reading this per frame — as
+       getBoundingClientRect() did — forces a synchronous layout every frame,
+       because the previous frame's class and custom-property writes left style
+       dirty. */
+    function measure() {
+      var top = 0;
+      var node = stage;
+      while (node) {
+        top += node.offsetTop;
+        node = node.offsetParent;
+      }
+      geom = { top: top, height: stage.offsetHeight };
+    }
+
+    /* Refuse to pin a scene taller than the space it has: a top-stuck element
+       taller than its scrollport can never scroll its own bottom into view, so
+       the CTA would be permanently unreachable. Must run unpinned. */
+    function fitsPinned() {
+      var header = document.querySelector('.header');
+      var headerH = header ? header.getBoundingClientRect().height : 0;
+      return sticky.scrollHeight <= root.clientHeight - headerH - 8;
+    }
+
+    function enablePin() {
+      mode = 'pin';
+      root.classList.add('js-scene');
       sticky.style.position = 'sticky';
       sticky.style.top = 'var(--header-h-live, var(--header-h))';
       // Runway: one viewport to read it, plus a beat per authority.
-      stage.style.height = 'calc(100vh + ' + items.length * 200 + 'px)';
-      onScroll();
+      stage.style.height = 'calc(' + vhUnit + ' + ' + items.length * 200 + 'px)';
+      measure();
+      pinFrame();
     }
 
-    function disable() {
-      if (!active) return;
-      active = false;
-      document.documentElement.classList.remove('js-scene');
-      sticky.style.position = '';
-      sticky.style.top = '';
-      stage.style.height = '';
-      items.forEach(function (el) {
-        el.classList.add('is-lit');
-      });
-      if (fill) fill.style.setProperty('--p', '1');
+    function pinFrame() {
+      if (mode !== 'pin' || !geom) return;
+      // clientHeight matches 100vh/100svh semantics; innerHeight tracks the live
+      // visual viewport and would make progress jump as a URL bar collapses.
+      var travel = geom.height - root.clientHeight;
+      if (travel <= 0) return;
+      var y = window.pageYOffset || root.scrollTop || 0;
+      var p = Math.min(1, Math.max(0, (y - geom.top) / travel));
+      lightUpTo(p);
+      setProgress(p / 0.85);
     }
 
-    function onScroll() {
-      if (!active) return;
-      if (raf) return;
-      raf = requestAnimationFrame(function () {
-        raf = null;
-        var rect = stage.getBoundingClientRect();
-        var travel = rect.height - window.innerHeight;
-        if (travel <= 0) return;
-        var p = Math.min(1, Math.max(0, -rect.top / travel));
-
-        // All lit by 85% of the runway, leaving a beat before release.
-        var span = 0.85;
-        items.forEach(function (el, i) {
-          var at = (i / items.length) * span;
-          el.classList.toggle('is-lit', p >= at);
-        });
-        if (fill) {
-          fill.style.setProperty('--p', String(Math.min(1, p / span)));
-        }
-      });
+    /* --- Swipe carousel (phone and tablet) -------------------------------- */
+    function syncSwipe() {
+      if (mode !== 'swipe' || !track || !list) return;
+      var p = edgeState(track, list, 'authlist', prev, next);
+      setProgress(p);
+      lightUpTo(p);
     }
 
+    function enableSwipe() {
+      // No track in the markup means nothing to enhance — stay a plain stack.
+      if (!track || !list) return;
+      mode = 'swipe';
+      root.classList.add('js-swipe');
+
+      // A scroll container with no focusable children is unreachable by
+      // keyboard. Set from JS only, so the desktop and no-JS focus orders are
+      // untouched and only a narrow viewport gains this tab stop.
+      track.setAttribute('tabindex', '0');
+      track.setAttribute('role', 'group');
+      track.setAttribute('aria-label', 'Authorities we handle');
+
+      onTrackScroll = syncSwipe;
+      track.addEventListener('scroll', onTrackScroll, { passive: true });
+
+      prevClick = function () { nudge(track, -1); };
+      nextClick = function () { nudge(track, 1); };
+      if (prev) prev.addEventListener('click', prevClick);
+      if (next) next.addEventListener('click', nextClick);
+
+      // "Which card am I looking at" is a discrete question, so it belongs to an
+      // observer rather than per-frame scrollLeft arithmetic.
+      if ('IntersectionObserver' in window) {
+        trackIO = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              entry.target.classList.toggle(
+                'is-current',
+                entry.isIntersecting && entry.intersectionRatio > 0.6
+              );
+            });
+          },
+          { root: track, threshold: [0, 0.6, 1] }
+        );
+        items.forEach(function (el) { trackIO.observe(el); });
+      }
+
+      syncSwipe();
+    }
+
+    /* --- Mode selection --------------------------------------------------- */
     function decide() {
-      // Desktop only, matching the prototype, and never under reduced motion.
-      if (!reduceMotion && window.innerWidth > 1040) enable();
-      else disable();
+      reset();
+      if (reduceMotion) return;
+      if (window.innerWidth > 1040) {
+        if (fitsPinned()) enablePin();
+      } else {
+        enableSwipe();
+      }
     }
 
     decide();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', decide);
+    onScrollFrame(pinFrame);
+
+    var lastW = window.innerWidth;
+    window.addEventListener('resize', function () {
+      if (window.innerWidth !== lastW) {
+        lastW = window.innerWidth;
+        decide();
+      } else if (mode === 'pin') {
+        // Height-only change (a collapsing toolbar) — the runway moved, so the
+        // cached geometry is stale, but the mode is still right.
+        measure();
+      }
+    });
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready
+        .then(function () {
+          if (mode === 'pin') measure();
+          else syncSwipe();
+        })
+        .catch(function () {});
+    }
   }
 
   /* ------------------------------------------------------------------------
@@ -526,6 +771,8 @@
      and a hard failsafe guarantees nothing is left hidden.
      ------------------------------------------------------------------------ */
   ready(function () {
+    var revealOk = false;
+
     [
       trackHeaderHeight,
       initNav,
@@ -538,15 +785,36 @@
     ].forEach(function (fn) {
       try {
         fn();
+        if (fn === initReveal) revealOk = true;
       } catch (e) {
         if (window.console) console.error('[mbc] ' + fn.name + ' failed', e);
       }
     });
 
-    // Whatever happened above, no content stays invisible.
+    /* Disarms the CSS failsafe — but only now, and only if the reveal system
+       actually came up. Two failures need covering and they need different nets:
+
+         - this file never arrives: `js-ready` is never set, so the CSS timer
+           fires and reveals everything. The old JS-side failsafe could not do
+           this, because it lived inside the file that failed to load.
+         - this file arrives but initReveal throws: same thing — we skip the
+           class, and the CSS timer covers it.
+
+       When the reveal system is healthy we set the class and let the observer
+       own everything below the fold, so reveals keep working however long the
+       reader takes on a long page. */
+    if (revealOk) document.documentElement.classList.add('js-ready');
+
+    /* Narrow net for a subtler failure: the observer constructed but never
+       fired for something already on screen. Deliberately scoped to what should
+       be visible — a blanket reveal here would strip the effect from every
+       below-fold element after 2.5s, which is exactly what it used to do. */
     setTimeout(function () {
       all('[data-reveal],[data-rise]').forEach(function (el) {
-        if (!el.classList.contains('is-in')) el.classList.add('is-in');
+        if (el.classList.contains('is-in')) return;
+        if (el.getBoundingClientRect().top < window.innerHeight) {
+          el.classList.add('is-in');
+        }
       });
     }, 2500);
   });

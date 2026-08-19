@@ -93,6 +93,11 @@
       </nav>
     </div>
   </div>
+  <!-- Reading progress. Sits over the header's existing 1px border so it adds
+       no height, and is aria-hidden because a progressbar role updated on
+       scroll would talk over a screen reader continuously. Driven entirely by
+       CSS scroll-timeline; absent where that is unsupported. -->
+  <div class="rprog" aria-hidden="true"><span class="rprog__fill"></span></div>
 </header>
 
 
@@ -122,24 +127,24 @@
   <div class="wrap">
     <h2 class="eyebrow eyebrow--on-dark" style="padding:48px 0 24px">How we work</h2>
 
-    <div class="prow" data-reveal>
+    <div class="prow" data-reveal="edge">
       <span class="prow__num">01</span>
       <h3 class="prow__title">We establish the position</h3>
       <p class="prow__body">Every engagement opens with a review of where the company stands against each of its statutory obligations, and what is outstanding.</p>
     </div>
-    <div class="prow" data-reveal>
+    <div class="prow" data-reveal="edge">
       <span class="prow__num">02</span>
       <h3 class="prow__title">We close the gaps</h3>
       <p class="prow__body">Registrations completed, arrears regularised, returns brought up to date &mdash; in the order that reduces exposure fastest.</p>
     </div>
-    <div class="prow" data-reveal>
+    <div class="prow" data-reveal="edge">
       <span class="prow__num">03</span>
       <h3 class="prow__title">We keep it current</h3>
       <p class="prow__body">Filing calendars, payroll deductions and renewals handled on an ongoing basis, so nothing lapses between reporting periods.</p>
     </div>
 
     <div class="dark-note">
-      <p class="dark-note__text" data-reveal>Precision, reliability and deep regulatory knowledge. That is what a compliance adviser is for.</p>
+      <p class="dark-note__text" data-reveal="deep">Precision, reliability and deep regulatory knowledge. That is what a compliance adviser is for.</p>
     </div>
   </div>
 </section>
@@ -161,7 +166,7 @@
 
 <section>
   <div class="closer">
-    <h2 class="closer__title" data-reveal>Start with a review of where you stand.</h2>
+    <h2 class="closer__title" data-reveal="deep">Start with a review of where you stand.</h2>
     <a class="btn btn--outline btn--mono" href="/contact">Book a consultation <span class="arw" aria-hidden="true">&rarr;</span></a>
   </div>
 </section>

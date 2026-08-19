@@ -93,6 +93,11 @@
       </nav>
     </div>
   </div>
+  <!-- Reading progress. Sits over the header's existing 1px border so it adds
+       no height, and is aria-hidden because a progressbar role updated on
+       scroll would talk over a screen reader continuously. Driven entirely by
+       CSS scroll-timeline; absent where that is unsupported. -->
+  <div class="rprog" aria-hidden="true"><span class="rprog__fill"></span></div>
 </header>
 
 
@@ -123,7 +128,7 @@
   </div>
 </section>
 
-<section class="band" id="enquiry" style="scroll-margin-top:140px">
+<section class="band" id="enquiry">
   <div class="wrap">
     <div class="formgrid">
       <div data-reveal>
@@ -220,18 +225,18 @@
 
 <section class="band--dark">
   <div class="wrap">
-    <h2 class="eyebrow eyebrow--on-dark" style="padding:48px 0 8px" data-reveal>Reach us</h2>
-    <div class="reach">
-      <div class="reach__cell" data-reveal>
+    <h2 class="eyebrow eyebrow--on-dark" style="padding:48px 0 8px" data-reveal="near">Reach us</h2>
+    <div class="reach" data-stagger="90">
+      <div class="reach__cell" data-reveal="near">
         <p class="reach__label">Office</p>
         <p class="reach__value">58 Fife Street<br>Bulawayo<br>Zimbabwe</p>
       </div>
-      <div class="reach__cell" data-reveal>
+      <div class="reach__cell" data-reveal="near">
         <p class="reach__label">Phone &amp; WhatsApp</p>
         <a class="reach__value" style="display:block" href="tel:+263774121012">(+263)&nbsp;774&nbsp;121&nbsp;012</a>
         <a class="reach__sub" href="https://wa.me/263774121012" target="_blank" rel="noopener">Open WhatsApp <span class="arw" aria-hidden="true">&rarr;</span></a>
       </div>
-      <div class="reach__cell" data-reveal>
+      <div class="reach__cell" data-reveal="near">
         <p class="reach__label">Email</p>
         <a class="reach__value reach__value--break" style="display:block" href="mailto:mmazha800@gmail.com">mmazha800@gmail.com</a>
       </div>

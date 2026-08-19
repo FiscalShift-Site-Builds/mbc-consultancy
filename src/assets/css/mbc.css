@@ -87,6 +87,14 @@
   --ease-inout: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
+/* Typed so they animate predictably and, crucially, do not inherit: a custom
+   property changed on an ancestor invalidates style for everything below it. */
+@property --p {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+
 /* --------------------------------------------------------------------------
    3. Reset & base
    -------------------------------------------------------------------------- */
@@ -112,7 +120,10 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* `hidden` makes body a scroll container, which is a position:sticky hazard
+     and opts the page into scroll anchoring. `clip` clips without either. */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 img,
@@ -298,9 +309,11 @@ p {
   color: var(--white);
 }
 
-.btn--solid:hover {
-  background: var(--cyan-600);
-  color: var(--white);
+@media (hover: hover) {
+  .btn--solid:hover {
+    background: var(--cyan-600);
+    color: var(--white);
+  }
 }
 
 .btn--cyan {
@@ -308,9 +321,11 @@ p {
   color: var(--teal-900);
 }
 
-.btn--cyan:hover {
-  background: var(--rose-300);
-  color: var(--teal-900);
+@media (hover: hover) {
+  .btn--cyan:hover {
+    background: var(--rose-300);
+    color: var(--teal-900);
+  }
 }
 
 .btn--outline {
@@ -319,9 +334,11 @@ p {
   font-weight: 500;
 }
 
-.btn--outline:hover {
-  background: var(--teal-900);
-  color: var(--white);
+@media (hover: hover) {
+  .btn--outline:hover {
+    background: var(--teal-900);
+    color: var(--white);
+  }
 }
 
 .btn--outline-dark {
@@ -329,9 +346,11 @@ p {
   color: var(--white);
 }
 
-.btn--outline-dark:hover {
-  background: var(--white);
-  color: var(--teal-900);
+@media (hover: hover) {
+  .btn--outline-dark:hover {
+    background: var(--white);
+    color: var(--teal-900);
+  }
 }
 
 .btn--mono {
@@ -354,9 +373,21 @@ p {
   border-bottom: 1px solid var(--teal-900);
 }
 
-@supports (backdrop-filter: blur(8px)) {
+/* Desktop only. At 94% background opacity just 6% of the backdrop shows, so
+   the blur is imperceptible — while on tile-based mobile GPUs a backdrop
+   readback forces a render-pass flush every scrolled frame. Mobile gets a
+   slightly more opaque bar instead, which looks the same and costs nothing. */
+@media (min-width: 1041px) {
+  @supports (backdrop-filter: blur(8px)) {
+    .header {
+      backdrop-filter: blur(8px);
+    }
+  }
+}
+
+@media (max-width: 1040px) {
   .header {
-    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.97);
   }
 }
 
@@ -510,9 +541,11 @@ p {
     border-color 0.24s var(--ease);
 }
 
-.nav__pill:hover {
-  background: var(--teal-900);
-  color: var(--white);
+@media (hover: hover) {
+  .nav__pill:hover {
+    background: var(--teal-900);
+    color: var(--white);
+  }
 }
 
 /* Current section — filled, and not a hover target since you are already here */
@@ -554,9 +587,11 @@ p {
   transition: background 0.24s var(--ease);
 }
 
-.nav__cta:hover {
-  background: var(--cyan-600);
-  color: var(--white);
+@media (hover: hover) {
+  .nav__cta:hover {
+    background: var(--cyan-600);
+    color: var(--white);
+  }
 }
 
 .nav__cta[aria-current='page'] {
@@ -571,6 +606,8 @@ p {
   flex: 0 0 auto;
   width: 30px;
   height: 30px;
+  /* Grown to the 44px minimum touch target on coarse pointers — see the
+     (pointer: coarse) override in the Pointer & touch section. */
   padding: 0;
   border: 1px solid var(--line-300);
   border-radius: 50%;
@@ -588,10 +625,12 @@ p {
   place-items: center;
 }
 
-.nav__arrow:hover {
-  background: var(--teal-900);
-  border-color: var(--teal-900);
-  color: var(--white);
+@media (hover: hover) {
+  .nav__arrow:hover {
+    background: var(--teal-900);
+    border-color: var(--teal-900);
+    color: var(--white);
+  }
 }
 
 .nav__arrow[disabled] {
@@ -599,10 +638,12 @@ p {
   cursor: default;
 }
 
-.nav__arrow[disabled]:hover {
-  background: var(--white);
-  border-color: var(--line-300);
-  color: var(--teal-900);
+@media (hover: hover) {
+  .nav__arrow[disabled]:hover {
+    background: var(--white);
+    border-color: var(--line-300);
+    color: var(--teal-900);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -668,6 +709,7 @@ p {
 .band--bloom {
   position: relative;
   overflow: hidden;
+  overflow: clip;
 }
 
 .band--bloom > .wrap {
@@ -695,9 +737,12 @@ p {
   transition: color 0.2s var(--ease), padding-left 0.24s var(--ease);
 }
 
-.ilist > a:hover {
-  color: var(--cyan-700);
-  padding-left: 6px;
+/* Guarded: on touch :hover latches after a tap and leaves this stuck. */
+@media (hover: hover) {
+  .ilist > a:hover {
+    color: var(--cyan-700);
+    padding-left: 6px;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -727,10 +772,12 @@ p {
   color: var(--rose-600);
 }
 
-.chooser__row:hover {
-  border-color: var(--rose-500);
-  background: var(--rose-050);
-  transform: translateX(6px);
+@media (hover: hover) {
+  .chooser__row:hover {
+    border-color: var(--rose-500);
+    background: var(--rose-050);
+    transform: translateX(6px);
+  }
 }
 
 .chooser__row--solid {
@@ -743,11 +790,13 @@ p {
   color: var(--cyan-200);
 }
 
-.chooser__row--solid:hover {
-  background: var(--cyan-600);
-  border-color: var(--cyan-600);
-  color: var(--white);
-  transform: translateX(6px);
+@media (hover: hover) {
+  .chooser__row--solid:hover {
+    background: var(--cyan-600);
+    border-color: var(--cyan-600);
+    color: var(--white);
+    transform: translateX(6px);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -770,8 +819,10 @@ p {
   transition: background 0.3s var(--ease);
 }
 
-.svccard:hover {
-  background: var(--tint-050);
+@media (hover: hover) {
+  .svccard:hover {
+    background: var(--tint-050);
+  }
 }
 
 .svccard__num {
@@ -809,9 +860,11 @@ p {
   transition: background 0.24s var(--ease), color 0.24s var(--ease);
 }
 
-.svccard:hover .svccard__cta {
-  background: var(--teal-900);
-  color: var(--white);
+@media (hover: hover) {
+  .svccard:hover .svccard__cta {
+    background: var(--teal-900);
+    color: var(--white);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -833,6 +886,14 @@ p {
   display: flex;
   align-items: center;
   min-height: calc(100vh - var(--header-h-live, var(--header-h)));
+}
+
+/* svh, not dvh: dvh changes as a toolbar collapses, which would relayout the
+   pinned element mid-scroll. svh is stable and fits at the worst case. */
+@supports (min-height: 100svh) {
+  .js-scene .authstage__sticky {
+    min-height: calc(100svh - var(--header-h-live, var(--header-h)));
+  }
 }
 
 .js-scene .authstage__sticky > .wrap {
@@ -915,6 +976,169 @@ p {
   align-self: flex-start;
 }
 
+/* -- Swipe carousel (phone and tablet) ------------------------------------
+   The pinned scene needs ~780px of height; a landscape tablet has ~670px below
+   the header and would clip its own CTA permanently. So below 1041px the five
+   authorities become a swipeable track instead, driving the same progress bar.
+
+   All of it is gated on html.js-swipe, the direct analogue of .js-scene, so a
+   phone without JS keeps the plain vertical stack. */
+.authnav {
+  display: none;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--line-300);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--teal-900);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease),
+    opacity 0.2s var(--ease);
+}
+
+.js-swipe .authnav {
+  display: grid;
+  place-items: center;
+}
+
+.authnav[disabled] {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.js-swipe .authlist {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0 10px;
+  border-top: none;
+}
+
+.js-swipe .authlist__cta {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin-top: 22px;
+}
+
+.js-swipe .authtrack {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* `proximity`, not `mandatory`: mandatory overrides native fling momentum,
+     fights html{scroll-behavior:smooth} on anchor navigation, and can leave the
+     final card unreachable when it is narrower than the remaining track. */
+  scroll-snap-type: x proximity;
+  /* Without this, swiping past the last card triggers the Android and iOS edge
+     back-gesture and navigates the visitor off the page. */
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 2px 0;
+}
+
+.js-swipe .authtrack::-webkit-scrollbar {
+  display: none;
+}
+
+/* Deliberately no `touch-action: pan-x`. The default lets the browser route
+   horizontal pans to this track while still allowing vertical page scroll;
+   pinning it to pan-x would freeze the page whenever a thumb starts on a card,
+   which is most of the screen. */
+.js-swipe .authitem {
+  flex: 0 0 82%; /* the 18% peek is the swipe affordance */
+  scroll-snap-align: start;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  padding: 4px 0 4px 16px;
+  border-bottom: none;
+  border-left: 2px solid var(--line-400);
+  /* Never dimmed here. The desktop scene fades unlit rows to 0.18, which on a
+     carousel would make the peeking card unreadable — the cyan left border
+     carries the active state instead. */
+  opacity: 1;
+  transform: none;
+  transition: border-color 0.3s var(--ease);
+}
+
+.js-swipe .authitem.is-current {
+  border-left-color: var(--cyan-500);
+}
+
+/* Same edge-fade idiom as .nav__scroller, so the two strips read alike. */
+.js-swipe .authlist--scrollable .authtrack {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 18px,
+    #000 calc(100% - 18px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 18px,
+    #000 calc(100% - 18px),
+    transparent 100%
+  );
+}
+
+.js-swipe .authlist--at-start .authtrack {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0,
+    #000 calc(100% - 18px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 0,
+    #000 calc(100% - 18px),
+    transparent 100%
+  );
+}
+
+.js-swipe .authlist--at-end .authtrack {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 18px,
+    #000 100%
+  );
+  mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 100%);
+}
+
+.js-swipe .authlist--at-start.authlist--at-end .authtrack {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+/* On a real touch device the swipe IS the control, and the peek, the edge fade
+   and the progress bar already say "there is more". Two 44px chevrons plus
+   their gaps would take ~108px out of a 390px screen and squeeze the card that
+   has to carry the text. So they appear only where there is no swipe gesture —
+   a narrow desktop window or a trackpad. */
+@media (pointer: coarse) {
+  .js-swipe .authnav {
+    display: none;
+  }
+
+  .js-swipe .authlist {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .js-swipe .authitem {
+    flex-basis: 86%;
+  }
+}
+
 /* --------------------------------------------------------------------------
    13. Ledger rows (authority-by-authority, process steps)
    -------------------------------------------------------------------------- */
@@ -924,7 +1148,9 @@ p {
   gap: 40px;
   padding: 30px 0;
   border-top: 1px solid var(--rule-dark);
-  scroll-margin-top: 140px;
+  /* No scroll-margin-top here. html{scroll-padding-top} already offsets the
+     sticky header, and the two ADD — the prototype's hard-coded 140px left in
+     place here put deep links ~290px past their target on a phone. */
 }
 
 .srow__name {
@@ -1094,10 +1320,12 @@ p {
     box-shadow 0.26s var(--ease);
 }
 
-.pkg:hover {
-  border-color: var(--teal-900);
-  transform: translateY(-4px);
-  box-shadow: 0 18px 34px -22px rgba(6, 51, 60, 0.5);
+@media (hover: hover) {
+  .pkg:hover {
+    border-color: var(--teal-900);
+    transform: translateY(-4px);
+    box-shadow: 0 18px 34px -22px rgba(6, 51, 60, 0.5);
+  }
 }
 
 .pkg__meta {
@@ -1162,8 +1390,10 @@ p {
   transition: background 0.26s var(--ease);
 }
 
-.portal:hover {
-  background: var(--tint-050);
+@media (hover: hover) {
+  .portal:hover {
+    background: var(--tint-050);
+  }
 }
 
 .portal__kind {
@@ -1223,14 +1453,18 @@ p {
   color: var(--white);
 }
 
-.actionpair > a:hover {
-  background: var(--cyan-500);
-  color: var(--teal-900);
+@media (hover: hover) {
+  .actionpair > a:hover {
+    background: var(--cyan-500);
+    color: var(--teal-900);
+  }
 }
 
-.actionpair > a + a:hover {
-  background: var(--white);
-  color: var(--teal-900);
+@media (hover: hover) {
+  .actionpair > a + a:hover {
+    background: var(--white);
+    color: var(--teal-900);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -1326,9 +1560,11 @@ p {
   padding-left: 24px;
 }
 
-.actionsplit > a:hover {
-  background: var(--teal-900);
-  color: var(--white);
+@media (hover: hover) {
+  .actionsplit > a:hover {
+    background: var(--teal-900);
+    color: var(--white);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -1697,7 +1933,10 @@ p {
   pointer-events: none;
 }
 
-/* Departure wipe — driven by JS on internal navigation */
+/* Departure wipe — driven by JS on internal navigation.
+   No will-change: a transform-only transition composites without the hint, and
+   a permanent hint on a fixed full-viewport element promotes a layer on every
+   page for no benefit. */
 .wipe {
   position: fixed;
   inset: 0;
@@ -1706,7 +1945,6 @@ p {
   transform: scaleY(0);
   transform-origin: bottom;
   pointer-events: none;
-  will-change: transform;
 }
 
 .wipe.is-covering {
@@ -1718,7 +1956,7 @@ p {
    content is never stranded invisible if the script fails to run. */
 .js [data-reveal] {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translate3d(0, 20px, 0);
   transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
 }
 
@@ -1727,16 +1965,182 @@ p {
   transform: none;
 }
 
+/* Direction-aware variants.
+   ORDER IS LOAD-BEARING: these tie with the base rule on specificity (both
+   0-2-0), so they only win by coming after it. The .is-in rule above is 0-3-0
+   and beats all of them, which is what guarantees every variant lands on
+   `transform: none`. Do not sort or reorder this block.
+
+   translate3d throughout, including the base rule, so every variant promotes
+   identically — mixing 2D and 3D transforms across a page gives inconsistent
+   subpixel text rendering mid-transition.
+
+   No will-change anywhere in here. Ten permanently promoted full-width layers
+   is ~44MB of texture memory on a 2-3GB device and shows up as checkerboarding
+   during fast scroll. Chrome promotes for the duration of a compositable
+   transition anyway, then releases. */
+.js [data-reveal='near'] {
+  transform: translate3d(0, 10px, 0);
+  transition-duration: 0.45s;
+}
+
+.js [data-reveal='edge'] {
+  transform: translate3d(-22px, 0, 0);
+  transition-duration: 0.7s;
+}
+
+.js [data-reveal='edge-r'] {
+  transform: translate3d(22px, 0, 0);
+  transition-duration: 0.7s;
+}
+
+.js [data-reveal='lift'] {
+  transform: translate3d(0, 26px, 0) scale(0.985);
+  transition-duration: 0.6s;
+}
+
+.js [data-reveal='deep'] {
+  transform: translate3d(0, 34px, 0);
+  transition-duration: 0.85s;
+}
+
 /* Hero lines stagger on load rather than on scroll */
 .js [data-rise] {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translate3d(0, 24px, 0);
   transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
 }
 
 .js [data-rise].is-in {
   opacity: 1;
   transform: none;
+}
+
+/* CSS-only failsafe against the script never arriving.
+   The JS failsafe cannot cover this case: it lives inside the file that failed
+   to load. `js-ready` is set by mbc.js as soon as it boots, which cancels this
+   animation before its delay elapses — so when script works the reveal effect
+   keeps working however far down the page the reader gets, and when it does not
+   the content appears anyway. */
+@keyframes revealFailsafe {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.js:not(.js-ready) [data-reveal],
+.js:not(.js-ready) [data-rise] {
+  animation: revealFailsafe 0.01s linear 4s forwards;
+}
+
+/* Section rules that draw in.
+   The border stays in the box model at 1px and merely turns transparent, with a
+   pseudo-element overlaid in exactly its place — so every row height and every
+   neighbour's position is byte-identical to a page without this effect. Rides
+   the existing `is-in` class, so it inherits the observer, the JS failsafe and
+   the CSS failsafe above without adding a code path. */
+.js .srow,
+.js .prow,
+.js .portal,
+.js .svc {
+  position: relative;
+  border-top-color: transparent;
+}
+
+.js .srow::before,
+.js .prow::before,
+.js .portal::before,
+.js .svc::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--rule-ink, var(--line-200));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.75s var(--ease);
+}
+
+.js .srow.is-in::before,
+.js .prow.is-in::before,
+.js .portal.is-in::before,
+.js .svc.is-in::before {
+  transform: scaleX(1);
+}
+
+/* These rows sit on two different grounds; one inherited property covers both. */
+.band--dark {
+  --rule-ink: var(--rule-dark);
+}
+
+/* Reading progress — scroll-driven, so it runs on the compositor and holds up
+   when the main thread is busy. Where animation-timeline is unsupported it is
+   simply absent, which needs no fallback because it is decorative. */
+.rprog {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  overflow: hidden;
+  pointer-events: none;
+  display: none;
+}
+
+.rprog__fill {
+  display: block;
+  height: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  /* Same gradient as .authbar__fill, deliberately: the header bar and the
+     authorities bar should read as one system. */
+  background: linear-gradient(90deg, var(--cyan-500), var(--rose-500));
+}
+
+@supports (animation-timeline: scroll()) {
+  @keyframes rprogGrow {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .rprog {
+    display: block;
+  }
+
+  .rprog__fill {
+    animation: rprogGrow linear forwards;
+    animation-timeline: scroll(root block);
+  }
+}
+
+/* Hero bloom parallax. A radial-gradient rasterises once, so translating it is
+   a pure compositor operation and never repaints — provided it is driven by
+   transform, never by `top` or `background-position`. The travel is capped well
+   inside the element's own overhang so its soft edge never enters the clip
+   rectangle and exposes a hard circle boundary. */
+@supports (animation-timeline: view()) {
+  @keyframes bloomDrift {
+    from {
+      transform: translate3d(0, -18px, 0) scale(1);
+    }
+    to {
+      transform: translate3d(0, 96px, 0) scale(1.06);
+    }
+  }
+
+  .hero-bloom {
+    will-change: transform;
+    animation: bloomDrift linear both;
+    animation-timeline: view(block);
+    animation-range: entry 0% exit 100%;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -1899,7 +2303,102 @@ p {
 }
 
 /* --------------------------------------------------------------------------
-   24. Accessibility & preferences
+   24. Pointer & touch
+   Every :hover that moves or fills something is guarded by (hover: hover)
+   above, because on touch :hover latches after a tap and leaves the element
+   stuck. That removes all discretionary feedback from a tap, so press states
+   replace it here.
+
+   This section must stay BEFORE the accessibility and reduced-motion sections:
+   the reduced-motion block neutralises these transforms and only wins on
+   source order.
+   -------------------------------------------------------------------------- */
+
+/* Pills, buttons and standalone controls press in. */
+.btn:active,
+.nav__pill:active,
+.nav__cta:active,
+.nav__arrow:active,
+.authnav:active,
+.svccard__cta:active,
+.pkg__cta:active,
+.authlist__cta:active {
+  transform: scale(0.97);
+  transition-duration: 0.06s;
+}
+
+.chooser__row:active {
+  transform: translateX(3px);
+  background: var(--rose-050);
+  border-color: var(--rose-500);
+}
+
+.chooser__row--solid:active {
+  background: var(--cyan-600);
+  border-color: var(--cyan-600);
+  color: var(--white);
+}
+
+/* Grid cards and full-bleed rows tint rather than scale: a scaled grid child
+   opens a hairline seam against its neighbour's border. Carousel cards must not
+   move at all — :active fires the instant a finger lands, before the browser
+   has decided the gesture is a scroll, so any movement here would flash on
+   every swipe attempt. */
+.svccard:active,
+.portal:active,
+.authitem:active {
+  background: var(--tint-050);
+}
+
+.pkg:active {
+  border-color: var(--teal-900);
+  background: #EAF2F3;
+}
+
+.actionpair > a:active {
+  background: var(--cyan-500);
+  color: var(--teal-900);
+}
+
+.actionsplit > a:active {
+  background: var(--teal-900);
+  color: var(--white);
+}
+
+.ilist > a:active {
+  color: var(--cyan-700);
+}
+
+/* Coarse pointers: meet the 44px minimum touch target. */
+@media (pointer: coarse) {
+  .nav__arrow {
+    width: 44px;
+    height: 44px;
+    font-size: 14px;
+  }
+}
+
+/* Suppress the platform tap flash only where a real :active state replaces it. */
+@media (hover: none) {
+  .btn,
+  .nav__pill,
+  .nav__cta,
+  .nav__arrow,
+  .authnav,
+  .chooser__row,
+  .svccard,
+  .pkg,
+  .portal,
+  .authitem,
+  .actionpair > a,
+  .actionsplit > a,
+  .ilist > a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   25. Accessibility & preferences
    -------------------------------------------------------------------------- */
 
 /* Every interactive element gets a visible keyboard ring — the prototypes only
@@ -1977,6 +2476,44 @@ p {
   .pkg:hover {
     transform: none;
   }
+
+  /* Added in the touch-motion pass. The carousel is scroll-snap motion by
+     definition, so under reduced motion there is no swipe mode at all and the
+     plain vertical stack stands (enforced in JS too). */
+  .js-swipe .authitem {
+    opacity: 1;
+    transform: none;
+  }
+
+  .rprog {
+    display: none !important;
+  }
+
+  .hero-bloom {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* Rules are drawn already, not drawn in. */
+  .js .srow::before,
+  .js .prow::before,
+  .js .portal::before,
+  .js .svc::before {
+    transform: scaleX(1);
+  }
+
+  /* Press feedback keeps its colour change; it loses the movement. */
+  .btn:active,
+  .nav__pill:active,
+  .nav__cta:active,
+  .nav__arrow:active,
+  .authnav:active,
+  .svccard__cta:active,
+  .pkg__cta:active,
+  .authlist__cta:active,
+  .chooser__row:active {
+    transform: none;
+  }
 }
 
 @media (prefers-contrast: more) {
@@ -1988,7 +2525,7 @@ p {
 }
 
 /* --------------------------------------------------------------------------
-   25. Print
+   26. Print
    -------------------------------------------------------------------------- */
 @media print {
   .curtain,
@@ -1996,8 +2533,30 @@ p {
   .header,
   .nav,
   .skip,
+  .rprog,
+  .authnav,
   .footer__band {
     display: none !important;
+  }
+
+  /* Rules print drawn, and the carousel prints as a plain list. */
+  .js .srow::before,
+  .js .prow::before,
+  .js .portal::before,
+  .js .svc::before {
+    transform: scaleX(1) !important;
+  }
+
+  .js-swipe .authtrack {
+    display: block !important;
+    overflow: visible !important;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+  }
+
+  .js-swipe .authitem {
+    border-left: none !important;
+    padding-left: 0 !important;
   }
 
   body {
