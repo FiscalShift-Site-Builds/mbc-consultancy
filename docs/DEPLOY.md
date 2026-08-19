@@ -9,6 +9,20 @@ and no build step on the host: `site/` is committed ready to serve.
 
 Repository: **`Kudakwashemaro/mbc-consultancy`** (private).
 
+> **Create a Pages project, not a Worker.** The dashboard's prominent
+> "Import a repository" button creates a **Worker** and pre-fills a deploy command
+> of `npx wrangler deploy`. That fails on this repo with:
+>
+> ```
+> ✘ [ERROR] Missing entry-point to Worker script or to assets directory
+> ```
+>
+> A Workers deploy expects `main` or `[assets]`; this project declares
+> `pages_build_output_dir` and uses Pages Functions. If you see that error, the
+> project was created as a Worker — delete it and follow the path below. You want
+> the **Pages** tab specifically, and there should be **no deploy command field at
+> all** once you are in the right flow.
+
 In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**,
 authorise access to that repository, then set:
 
