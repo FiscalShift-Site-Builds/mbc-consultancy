@@ -18,9 +18,14 @@ import os
 import re
 import socketserver
 import sys
+from urllib.parse import urlsplit
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "site")
 ROOT = os.path.abspath(ROOT)
+
+# The same sub-path build.py baked into the links, read from the same variable,
+# so a project-site build previews at the URLs it will really be served from.
+BASE = urlsplit(os.environ.get("MBC_SITE_URL", "")).path.rstrip("/")
 
 
 def load_redirects():
@@ -35,7 +40,8 @@ def load_redirects():
                 continue
             parts = re.split(r"\s+", line)
             if len(parts) >= 2:
-                rules[parts[0]] = (parts[1], int(parts[2]) if len(parts) > 2 else 302)
+                src = parts[0][len(BASE) :] if BASE and parts[0].startswith(BASE) else parts[0]
+                rules[src or "/"] = (parts[1], int(parts[2]) if len(parts) > 2 else 302)
     return rules
 
 
@@ -51,6 +57,18 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def send_head(self):
         path = self.path.split("?")[0].split("#")[0]
+
+        # Serve under the base path, and send the bare root there so the
+        # obvious http://127.0.0.1:8000/ still lands on the home page.
+        if BASE:
+            if path in ("/", ""):
+                return self.redirect_to(BASE + "/")
+            if path == BASE:
+                return self.redirect_to(BASE + "/")
+            if not path.startswith(BASE + "/"):
+                return self.serve_404()
+            path = path[len(BASE) :] or "/"
+            self.path = path
 
         if path in REDIRECTS:
             target, code = REDIRECTS[path]
@@ -71,6 +89,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         return super().send_head()
 
+    def redirect_to(self, target):
+        self.send_response(302)
+        self.send_header("Location", target)
+        self.end_headers()
+        return None
+
     def serve_404(self):
         page = os.path.join(ROOT, "404.html")
         if not os.path.exists(page):
@@ -88,7 +112,10 @@ def main():
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(("127.0.0.1", port), Handler) as httpd:
-        print("Serving %s at http://127.0.0.1:%d (Ctrl-C to stop)" % (ROOT, port))
+        print(
+            "Serving %s at http://127.0.0.1:%d%s/ (Ctrl-C to stop)"
+            % (ROOT, port, BASE)
+        )
         httpd.serve_forever()
 
 

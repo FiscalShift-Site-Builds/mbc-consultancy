@@ -5,7 +5,61 @@ and no build step on the host: `site/` is committed ready to serve.
 
 ---
 
-## 1. Cloudflare Pages setup
+## 1. GitHub Pages — the current deployment
+
+`.github/workflows/pages.yml` builds `src/` and publishes `site/` on every push
+to `main`. Nothing to configure per deploy; the workflow is the whole setup.
+
+The site is served from a **project-site sub-path**:
+
+    https://fiscalshift-site-builds.github.io/mbc-consultancy/
+
+That sub-path is the one thing to understand about this deployment. Every link
+and asset reference in `src/` is root-absolute (`/about`, `/assets/css/mbc.css`),
+which resolves against `github.io/` — the wrong root — unless it is prefixed.
+So `build.py` derives a base path from the *path component of `MBC_SITE_URL`*
+and prepends it to every root-absolute URL in the HTML, the manifest,
+`robots.txt`, `_headers` and `_redirects`:
+
+```bash
+MBC_SITE_URL=https://fiscalshift-site-builds.github.io/mbc-consultancy python3 build.py --check
+```
+
+One variable drives both the absolute URLs (canonical, Open Graph, JSON-LD,
+`sitemap.xml`) and the base prefix, so they cannot disagree. `tools/serve.py`
+reads the same variable, so a local preview serves the same URLs:
+
+```bash
+MBC_SITE_URL=https://fiscalshift-site-builds.github.io/mbc-consultancy python3 tools/serve.py
+# → http://127.0.0.1:8000/mbc-consultancy/
+```
+
+Set `MBC_SITE_URL` in the workflow's `env:` block to change where the site is
+published. Point a custom domain at Pages and the path component disappears,
+the base prefix becomes empty, and every rewrite is a no-op.
+
+### What does not carry across
+
+| File | On GitHub Pages |
+| --- | --- |
+| `functions/api/contact.js` | **Not run.** Pages serves static files only. |
+| `_headers` | Ignored — no CSP, no cache-control, no `X-Frame-Options`. |
+| `_redirects` | Ignored — the prototype-filename and alias redirects 404. |
+
+The contact form is the one with a visible consequence. `POST /api/contact`
+returns 404 instead of 503, `fetch` rejects, and the page shows its fallback:
+*"That did not send. Nothing you typed is lost"* with a WhatsApp link carrying
+everything the visitor typed, plus the email address. No enquiry is lost, but
+none reaches an inbox automatically either. To take enquiries by email on
+GitHub Pages, use the hosted-form option in §4 ("Alternative: skip the function
+entirely") — a static host cannot run the function.
+
+Extensionless URLs (`/about` → `about.html`) and `404.html` both work on
+GitHub Pages, so those need no change.
+
+---
+
+## 2. Cloudflare Pages setup
 
 Create a Pages project from this repository and set:
 
@@ -38,7 +92,7 @@ across with no change to the HTML.
 
 ---
 
-## 2. Set the domain — do this before launch
+## 3. Set the domain — do this before launch
 
 Until the real domain is set, the canonical links, Open Graph tags, JSON-LD and
 `sitemap.xml` all point at the placeholder `https://mbcconsultancy.example`.
@@ -54,7 +108,7 @@ prints a warning while the placeholder is still in use.
 
 ---
 
-## 3. Connect the contact form
+## 4. Connect the contact form
 
 The form at `/contact` posts to `/api/contact`. **Until you set the two
 variables below it returns 503, and the page offers the visitor a WhatsApp
@@ -133,7 +187,7 @@ Keep the honeypot field, and rebuild afterwards.
 
 ---
 
-## 4. Turn on Turnstile (recommended, free)
+## 5. Turn on Turnstile (recommended, free)
 
 The form ships with a honeypot, which stops naive bots with zero setup. For
 real protection add Cloudflare Turnstile:
@@ -164,12 +218,16 @@ real protection add Cloudflare Turnstile:
 
 ---
 
-## 5. Working on the site
+## 6. Working on the site
 
 ```bash
+export MBC_SITE_URL=https://fiscalshift-site-builds.github.io/mbc-consultancy
 python3 build.py --check      # regenerate site/ and run the checks
-python3 tools/serve.py        # preview at http://127.0.0.1:8000
+python3 tools/serve.py        # preview at http://127.0.0.1:8000/mbc-consultancy/
 ```
+
+Export `MBC_SITE_URL` first, or you will rebuild `site/` for a domain root and
+commit links that 404 on the live sub-path. Both commands read it (§1).
 
 `tools/serve.py` resolves URLs the way Pages does — `/compliance` serves
 `compliance.html`, unknown paths serve `404.html` with a real 404, and
@@ -191,11 +249,11 @@ changes) — see `tools/make_images.py`; it needs Pillow and the Archivo TTFs.
 
 ---
 
-## 6. Pre-launch checklist
+## 7. Pre-launch checklist
 
-- [ ] `MBC_SITE_URL` set to the real domain and `site/` rebuilt (§2)
-- [ ] `RESEND_API_KEY` + `MAIL_TO` set, and a test enquiry received (§3)
-- [ ] Turnstile sitekey + secret in place (§4)
+- [ ] `MBC_SITE_URL` set to the real domain and `site/` rebuilt (§3)
+- [ ] `RESEND_API_KEY` + `MAIL_TO` set, and a test enquiry received (§4)
+- [ ] Turnstile sitekey + secret in place (§5)
 - [ ] Decide on the claims and content flagged in [`GAPS.md`](GAPS.md) §A
 - [ ] Submit `sitemap.xml` in Google Search Console
 - [ ] Share a link into WhatsApp and confirm the preview card renders

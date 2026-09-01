@@ -21,6 +21,7 @@ import re
 import shutil
 import sys
 from datetime import date
+from urllib.parse import urlsplit
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, "src")
@@ -35,6 +36,14 @@ OUT = os.path.join(ROOT, "site")
 # ---------------------------------------------------------------------------
 PLACEHOLDER_URL = "https://mbcconsultancy.example"
 SITE_URL = os.environ.get("MBC_SITE_URL", PLACEHOLDER_URL).rstrip("/")
+
+# When the site is served from a sub-path rather than a domain root — a GitHub
+# Pages project site lives at /<repo>/ — every root-absolute "/href" in the
+# source needs that prefix or it resolves against the wrong root and 404s. The
+# prefix is already part of SITE_URL, so derive it rather than adding a second
+# knob that can silently disagree with the first. Empty for a root deploy, in
+# which case every rewrite below is a no-op.
+BASE = urlsplit(SITE_URL).path.rstrip("/")
 
 # nav key -> the pages that should show that nav item as current
 NAV_KEYS = ("compliance", "services", "fiscalisation", "about", "contact")
@@ -150,6 +159,34 @@ def write(path, text):
         fh.write(text)
 
 
+# A root-absolute URL, guarding against protocol-relative "//host/path".
+ROOT_URL = r"/(?!/)[^\s\"')]*"
+
+# Where root-absolute paths appear, per file format. HTML attributes, JSON
+# string values in the manifest, the robots directives, and the two Cloudflare
+# route files — which are inert on a static host but must not go stale if a
+# sub-path build is ever deployed to Cloudflare.
+BASE_RULES = {
+    "html": [re.compile(r'\b(?:href|src|action)="(%s)"' % ROOT_URL)],
+    "json": [re.compile(r'"(%s)"' % ROOT_URL)],
+    "robots": [re.compile(r"(?mi)^(?:Allow|Disallow):\s*(%s)" % ROOT_URL)],
+    "_redirects": [re.compile(r"(?m)^(%s)" % ROOT_URL), re.compile(r"(?m)^\S+\s+(%s)" % ROOT_URL)],
+    "_headers": [re.compile(r"(?m)^(%s)$" % ROOT_URL)],
+}
+
+
+def apply_base(text, kind):
+    """Prefix every root-absolute path with BASE. A no-op at a domain root."""
+    if not BASE:
+        return text
+    for pattern in BASE_RULES[kind]:
+        # Rewrite right-to-left so earlier spans keep their offsets.
+        for m in reversed(list(pattern.finditer(text))):
+            start, end = m.span(1)
+            text = text[:start] + BASE + text[start:end] + text[end:]
+    return text
+
+
 def render_header(header_tpl, nav_key):
     """Fill the nav's aria-current markers for the page being built."""
     out = header_tpl
@@ -171,14 +208,17 @@ def build_pages(layout, header_tpl, footer):
         doc = doc.replace("{{OG_TITLE}}", html.escape(page["og_title"], quote=True))
         doc = doc.replace("{{DESC}}", html.escape(page["desc"], quote=True))
         doc = doc.replace("{{SITE}}", SITE_URL)
-        doc = doc.replace("{{PATH}}", "" if page["path"] == "/" else page["path"])
+        # The home page keeps its trailing slash so the canonical URL matches
+        # the one sitemap.xml advertises; under a base path the two forms are
+        # different URLs and a mismatch costs a redirect hop.
+        doc = doc.replace("{{PATH}}", page["path"])
         doc = doc.replace(
             "{{ROBOTS}}",
             '<meta name="robots" content="noindex,follow">\n'
             if page.get("noindex")
             else "",
         )
-        write(os.path.join(OUT, page["slug"] + ".html"), doc)
+        write(os.path.join(OUT, page["slug"] + ".html"), apply_base(doc, "html"))
         built.append(page["slug"] + ".html")
     return built
 
@@ -205,6 +245,11 @@ def copy_static(layout):
     shutil.copytree(
         os.path.join(SRC, "assets"), os.path.join(OUT, "assets"), dirs_exist_ok=True
     )
+    # GitHub Pages runs Jekyll over a branch deploy unless this file is
+    # present, and Jekyll drops paths beginning with an underscore. Harmless
+    # everywhere else; costs one empty file.
+    write(os.path.join(OUT, ".nojekyll"), "")
+
     for name in ("_headers", "_redirects", "robots.txt", "site.webmanifest"):
         src = os.path.join(SRC, name)
         if not os.path.exists(src):
@@ -212,7 +257,8 @@ def copy_static(layout):
         text = read(SRC, name)
         text = text.replace("{{SCRIPT_HASHES}}", inline_script_hashes(layout))
         text = text.replace("{{SITE}}", SITE_URL)
-        write(os.path.join(OUT, name), text)
+        kind = {"site.webmanifest": "json", "robots.txt": "robots"}.get(name, name)
+        write(os.path.join(OUT, name), apply_base(text, kind))
 
 
 def build_sitemap():
@@ -277,20 +323,33 @@ def check(built):
                 problems.append("%s: prototype artefact %r" % (where, artefact))
 
         # 3. Internal links resolve to a real page, and anchors to a real id.
-        for href in HREF_RE.findall(text):
-            if href.startswith(("http://", "https://", "mailto:", "tel:", "#")):
+        for raw in HREF_RE.findall(text):
+            if raw.startswith(("http://", "https://", "mailto:", "tel:", "#")):
                 continue
+            # Everything root-absolute must carry the base prefix by now; one
+            # that does not is a path apply_base failed to reach.
+            href = raw
+            if BASE:
+                if href == BASE:
+                    href = "/"
+                elif href.startswith(BASE + "/"):
+                    href = href[len(BASE) :]
+                else:
+                    problems.append(
+                        "%s: %s is missing the %s base path" % (where, raw, BASE)
+                    )
+                    continue
             if href.startswith("/assets/") or href in ("/site.webmanifest",):
                 target = os.path.join(OUT, href.lstrip("/"))
                 if not os.path.exists(target):
-                    problems.append("%s: missing asset %s" % (where, href))
+                    problems.append("%s: missing asset %s" % (where, raw))
                 continue
             base, _, frag = href.partition("#")
             base = base.split("?")[0] or "/"
             if base not in known:
-                problems.append("%s: link to unknown page %s" % (where, href))
+                problems.append("%s: link to unknown page %s" % (where, raw))
             elif frag and (base + "#" + frag) not in anchors:
-                problems.append("%s: link to missing anchor %s" % (where, href))
+                problems.append("%s: link to missing anchor %s" % (where, raw))
 
     # 4. The shared chrome really is identical everywhere.
     def slice_between(text, start, end):

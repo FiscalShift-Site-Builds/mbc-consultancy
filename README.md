@@ -9,8 +9,9 @@ third-party requests, no build step on the host.
 ## Quick start
 
 ```bash
+export MBC_SITE_URL=https://fiscalshift-site-builds.github.io/mbc-consultancy
 python3 build.py --check      # regenerate site/ and verify it
-python3 tools/serve.py        # preview at http://127.0.0.1:8000
+python3 tools/serve.py        # preview at http://127.0.0.1:8000/mbc-consultancy/
 ```
 
 ## Layout
@@ -29,6 +30,7 @@ functions/api/       Cloudflare Pages Function for the contact form.
                      Must stay at the repo root, not inside site/.
 tools/               dev server, brand-image generator
 docs/DEPLOY.md       deployment + contact-form setup
+.github/workflows/   GitHub Pages build-and-deploy on push to main
 docs/GAPS.md         what still needs a decision before launch
 project/             the original design prototypes, kept for reference
 ```
@@ -49,9 +51,10 @@ This archive is the whole git repository — five commits, history already clean
 ```bash
 cd mbc-consultancy
 git log --oneline          # five commits, main checked out
+export MBC_SITE_URL=https://fiscalshift-site-builds.github.io/mbc-consultancy
 python3 build.py --check   # regenerate site/ and verify
-python3 tools/serve.py     # preview at http://127.0.0.1:8000
-git push -u origin main    # deploy
+python3 tools/serve.py     # preview at http://127.0.0.1:8000/mbc-consultancy/
+git push -u origin main    # deploy — GitHub Actions publishes to Pages
 ```
 
 The push needs write access to
@@ -70,6 +73,6 @@ Three things need action — see **[docs/GAPS.md](docs/GAPS.md)**:
 1. Set the real domain (`MBC_SITE_URL`) — canonical, Open Graph and sitemap
    URLs are placeholders until you do.
 2. Connect the contact form — it currently falls back to WhatsApp because no
-   mail provider is configured. See [docs/DEPLOY.md](docs/DEPLOY.md) §3.
+   mail provider is configured. See [docs/DEPLOY.md](docs/DEPLOY.md) §4.
 3. Confirm or remove the unsourced claims listed in GAPS.md §A1 — including
    "licenced ZIMRA tax agent" and "award-winning consultant".

@@ -1,6 +1,6 @@
 User-agent: *
-Allow: /
-Disallow: /thanks
-Disallow: /api/
+Allow: /mbc-consultancy/
+Disallow: /mbc-consultancy/thanks
+Disallow: /mbc-consultancy/api/
 
-Sitemap: https://mbcconsultancy.example/sitemap.xml
+Sitemap: https://fiscalshift-site-builds.github.io/mbc-consultancy/sitemap.xml

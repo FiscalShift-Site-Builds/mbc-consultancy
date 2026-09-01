@@ -3,24 +3,24 @@
 
 # The design prototypes were shared under these filenames. Anyone holding an
 # old link (or an indexed one) lands on the right page instead of a 404.
-/MBC%20Consultancy%20v2.dc.html    /                 301
-/MBC%20Compliance.dc.html          /compliance       301
-/MBC%20Other%20Services.dc.html    /services         301
-/MBC%20Fiscalisation.dc.html       /fiscalisation    301
-/MBC%20About.dc.html               /about            301
-/MBC%20Contact.dc.html             /contact          301
+/mbc-consultancy/MBC%20Consultancy%20v2.dc.html    /mbc-consultancy/                 301
+/mbc-consultancy/MBC%20Compliance.dc.html          /mbc-consultancy/compliance       301
+/mbc-consultancy/MBC%20Other%20Services.dc.html    /mbc-consultancy/services         301
+/mbc-consultancy/MBC%20Fiscalisation.dc.html       /mbc-consultancy/fiscalisation    301
+/mbc-consultancy/MBC%20About.dc.html               /mbc-consultancy/about            301
+/mbc-consultancy/MBC%20Contact.dc.html             /mbc-consultancy/contact          301
 
 # Plausible guesses at the services page, which is titled "Other services"
 # but reached from a nav pill labelled "Accounting".
-/accounting                        /services#accounting   301
-/other-services                    /services              301
-/audit                             /services#audit        301
-/tax                               /services#tax          301
+/mbc-consultancy/accounting                        /mbc-consultancy/services#accounting   301
+/mbc-consultancy/other-services                    /mbc-consultancy/services              301
+/mbc-consultancy/audit                             /mbc-consultancy/services#audit        301
+/mbc-consultancy/tax                               /mbc-consultancy/services#tax          301
 
 # The partnership page was called "Fiscal Shift" before it was renamed.
-/fiscal-shift                      /fiscalisation    301
-/fiscalization                     /fiscalisation    301
+/mbc-consultancy/fiscal-shift                      /mbc-consultancy/fiscalisation    301
+/mbc-consultancy/fiscalization                     /mbc-consultancy/fiscalisation    301
 
 # Common contact-page aliases.
-/contact-us                        /contact          301
-/book                              /contact          301
+/mbc-consultancy/contact-us                        /mbc-consultancy/contact          301
+/mbc-consultancy/book                              /mbc-consultancy/contact          301

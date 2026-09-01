@@ -1,0 +1,51 @@
+# Deploy site/ to GitHub Pages.
+#
+# The site is served from a project-site sub-path, so MBC_SITE_URL carries both
+# the origin and that path: build.py derives the /<repo> prefix it prepends to
+# every root-absolute link from the URL's path component. Change the URL here
+# (or point a custom domain at Pages and drop the path) and the whole site
+# follows.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; let an in-flight one finish rather than
+# publishing a half-uploaded artifact.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Rebuild from src/ rather than trusting the committed site/, and fail
+      # the deploy on a broken link, a missing asset or a stale placeholder.
+      - name: Build and check
+        env:
+          MBC_SITE_URL: https://fiscalshift-site-builds.github.io/mbc-consultancy
+        run: python3 build.py --check
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
