@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+  body{margin:0;background:#fff;-webkit-font-smoothing:antialiased}
+  a{color:#06333C;text-decoration:none}
+  a:hover{color:#0097AD}
+  ::selection{background:#06333C;color:#fff}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @keyframes curtainUp{from{transform:translateY(0)}to{transform:translateY(-100%)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @media (max-width:900px){
+    [data-hero="1"],[data-2col="1"]{grid-template-columns:1fr!important;gap:28px!important}
+    [data-hero="1"]>div:first-child{padding:36px 0 0!important;border-right:none!important}
+    [data-hero="1"]>div:last-child{padding:0 0 34px!important}
+    [data-srow="1"]{grid-template-columns:1fr!important;gap:10px!important}
+  }
+  @media (max-width:620px){
+    [data-topbar="1"] span:nth-child(2){display:none}
+  }
+</style>
+</helmet>
+
+<div style="font-family:Archivo,Helvetica Neue,Helvetica,Arial,sans-serif;color:#0E262C;background:#fff">
+
+  <div style="position:fixed;inset:0;z-index:95;background:#06333C;transform:translateY(-100%);animation:curtainUp .55s cubic-bezier(.76,0,.24,1) both;pointer-events:none"></div>
+  <div data-wipe="1" style="position:fixed;inset:0;z-index:90;background:#06333C;transform:scaleY(0);transform-origin:bottom;pointer-events:none"></div>
+
+  <header style="position:sticky;top:0;z-index:40;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid #06333C">
+    <div style="max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,40px)">
+      <div data-topbar="1" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 32px;padding:13px 0;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#7A8B90;border-bottom:1px solid #E2E9EB">
+        <span>58 Fife Street, Bulawayo</span>
+        <span>Licenced ZIMRA tax agent</span>
+        <div style="display:flex;gap:20px">
+          <a href="tel:+263774121012" style="color:#7A8B90">(+263) 774 121 012</a>
+          <a href="mailto:mmazha800@gmail.com" style="color:#7A8B90">mmazha800@gmail.com</a>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px 32px;padding:16px 0">
+        <a href="MBC%20Consultancy%20v2.dc.html" style="display:flex;align-items:baseline;gap:11px">
+          <span style="font-size:30px;font-weight:700;letter-spacing:-.045em;color:#06333C;line-height:1">MBC</span>
+          <span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#7A8B90">Consultancy</span>
+        </a>
+        <nav style="display:flex;align-items:center;flex-wrap:wrap;gap:10px">
+          <a href="MBC%20Compliance.dc.html" style="padding:10px 20px;border:1px solid #06333C;border-radius:999px;white-space:nowrap;font-size:14px;font-weight:500;transition:background .24s ease,color .24s ease,border-color .24s ease" style-hover="background:#06333C;color:#fff">Compliance</a>
+          <a href="MBC%20Other%20Services.dc.html#accounting" style="padding:10px 20px;border:1px solid #06333C;border-radius:999px;white-space:nowrap;font-size:14px;font-weight:500;transition:background .24s ease,color .24s ease,border-color .24s ease" style-hover="background:#06333C;color:#fff">Accounting</a>
+          <a href="MBC%20Fiscalisation.dc.html" style="padding:10px 20px;border:1px solid #06333C;border-radius:999px;white-space:nowrap;font-size:14px;font-weight:500;transition:background .24s ease,color .24s ease,border-color .24s ease" style-hover="background:#06333C;color:#fff">Fiscalisation</a>
+          <a href="MBC%20About.dc.html" style="padding:10px 14px;white-space:nowrap;font-size:14px;color:#D9788C;transition:color .2s ease" style-hover="color:#D9788C">About</a>
+          <a href="MBC%20Contact.dc.html" style="padding:10px 20px;border-radius:999px;background:#06333C;color:#fff;white-space:nowrap;font-size:14px;font-weight:500;transition:background .24s ease" style-hover="background:#0097AD">Book a consultation</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <section style="border-bottom:1px solid #06333C">
+    <div style="max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,40px)">
+      <div data-hero="1" style="display:grid;grid-template-columns:1fr 320px;gap:0">
+        <div style="padding:58px 56px 48px 0;border-right:1px solid #E2E9EB">
+          <p data-anim="line" style="margin:0 0 22px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#0097AD">About us</p>
+          <h1 data-anim="line" style="margin:0;font-size:clamp(36px,6.5vw,68px);line-height:1.04;font-weight:700;letter-spacing:-.04em;text-wrap:balance">A professional services firm built around regulatory knowledge.</h1>
+          <p data-anim="line" style="margin:28px 0 0;font-size:19px;line-height:1.65;color:#566A70;max-width:32em;text-wrap:pretty">MBC Consultancy is incorporated in Zimbabwe and specialises in regulatory compliance, auditing and accounting solutions. We help businesses navigate complex statutory requirements and maintain full regulatory adherence across Zimbabwe and beyond.</p>
+        </div>
+        <div style="padding:58px 0 48px 32px">
+          <p style="margin:0 0 20px;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#0097AD">The firm</p>
+          <div style="display:flex;flex-direction:column;border-top:1px solid #E2E9EB">
+            <span style="padding:12px 0;border-bottom:1px solid #E2E9EB;font-size:15px;color:#566A70">Incorporated in Zimbabwe</span>
+            <span style="padding:12px 0;border-bottom:1px solid #E2E9EB;font-size:15px;color:#566A70">Licenced ZIMRA tax agent</span>
+            <span style="padding:12px 0;border-bottom:1px solid #E2E9EB;font-size:15px;color:#566A70">Led by an award-winning consultant</span>
+            <span style="padding:12px 0;border-bottom:1px solid #E2E9EB;font-size:15px;color:#566A70">Offices at 58 Fife Street, Bulawayo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#06333C;color:#fff">
+    <div style="max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,40px)">
+      <p style="margin:0;padding:48px 0 24px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#4DD9E8">How we work</p>
+      <div data-srow="1" style="display:grid;grid-template-columns:64px 1fr 1.2fr;gap:24px;align-items:baseline;padding:26px 0;border-top:1px solid rgba(255,255,255,.2)">
+        <span style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#F0A9B7">01</span>
+        <span style="font-size:clamp(22px,2.4vw,26px);font-weight:600;letter-spacing:-.03em;color:#fff">We establish the position</span>
+        <span style="font-size:16px;line-height:1.7;color:rgba(255,255,255,.78)">Every engagement opens with a review of where the company stands against each of its statutory obligations, and what is outstanding.</span>
+      </div>
+      <div data-srow="1" style="display:grid;grid-template-columns:64px 1fr 1.2fr;gap:24px;align-items:baseline;padding:26px 0;border-top:1px solid rgba(255,255,255,.2)">
+        <span style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#F0A9B7">02</span>
+        <span style="font-size:clamp(22px,2.4vw,26px);font-weight:600;letter-spacing:-.03em;color:#fff">We close the gaps</span>
+        <span style="font-size:16px;line-height:1.7;color:rgba(255,255,255,.78)">Registrations completed, arrears regularised, returns brought up to date &mdash; in the order that reduces exposure fastest.</span>
+      </div>
+      <div data-srow="1" style="display:grid;grid-template-columns:64px 1fr 1.2fr;gap:24px;align-items:baseline;padding:26px 0;border-top:1px solid rgba(255,255,255,.2)">
+        <span style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#F0A9B7">03</span>
+        <span style="font-size:clamp(22px,2.4vw,26px);font-weight:600;letter-spacing:-.03em;color:#fff">We keep it current</span>
+        <span style="font-size:16px;line-height:1.7;color:rgba(255,255,255,.78)">Filing calendars, payroll deductions and renewals handled on an ongoing basis, so nothing lapses between reporting periods.</span>
+      </div>
+      <div style="padding:34px 0 56px;border-top:1px solid rgba(255,255,255,.2)">
+        <p style="margin:0;font-size:21px;line-height:1.6;color:rgba(255,255,255,.9);max-width:40em">Precision, reliability and deep regulatory knowledge. That is what a compliance adviser is for.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-bottom:1px solid #06333C">
+    <div style="max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,40px)">
+      <div data-2col="1" style="display:grid;grid-template-columns:1fr 1fr;gap:56px;padding:52px 0">
+        <div>
+          <p style="margin:0 0 18px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#0097AD">Who we work with</p>
+          <p style="margin:0;font-size:17px;line-height:1.7;color:#566A70;max-width:34em">Owner-managed businesses, contractors bidding for public work, employers running payroll, and organisations that need their records to hold up under audit.</p>
+        </div>
+        <div>
+          <p style="margin:0 0 18px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#0097AD">Where we work</p>
+          <p style="margin:0;font-size:17px;line-height:1.7;color:#566A70;max-width:34em">From Bulawayo, across Zimbabwe and beyond. Most compliance work is handled remotely; we meet in person where the engagement calls for it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div style="max-width:1280px;margin:0 auto;padding:52px clamp(18px,4vw,40px) 60px;display:flex;justify-content:space-between;align-items:center;gap:40px;flex-wrap:wrap">
+      <h2 style="margin:0;font-size:clamp(28px,4.2vw,44px);line-height:1.1;font-weight:700;letter-spacing:-.04em;max-width:20em">Start with a review of where you stand.</h2>
+      <a href="MBC%20Contact.dc.html" style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:18px 28px;border:1px solid #06333C;border-radius:999px;white-space:nowrap;transition:background .26s ease,color .2s ease" style-hover="background:#06333C;color:#fff">Book a consultation &rarr;</a>
+    </div>
+  </section>
+
+  <footer style="background:#06333C;color:rgba(255,255,255,.7)">
+    <div style="max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,40px)">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap;padding:48px 0 36px;border-bottom:1px solid rgba(255,255,255,.16)">
+        <p style="margin:0;font-size:clamp(26px,3.4vw,40px);line-height:1.1;font-weight:700;letter-spacing:-.04em;color:#fff;max-width:14em">Let&rsquo;s get you compliant.</p>
+        <a href="MBC%20Contact.dc.html" style="padding:16px 30px;border-radius:999px;background:#00BCD4;color:#06333C;font-size:14.5px;font-weight:600;white-space:nowrap;transition:background .24s ease" style-hover="background:#F0A9B7">Book a consultation &rarr;</a>
+      </div>
+    </div>
+    <div style="max-width:1280px;margin:0 auto;padding:44px clamp(18px,4vw,40px) 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:44px">
+      <div>
+        <p style="margin:0;font-size:clamp(24px,2.8vw,30px);font-weight:700;color:#fff;letter-spacing:-.04em">MBC</p>
+        <p style="margin:6px 0 16px;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.45)">Consultancy</p>
+        <p style="margin:0;font-size:14px;line-height:1.65;max-width:26em">A professional services firm incorporated in Zimbabwe, specialising in regulatory compliance, auditing and accounting solutions.</p>
+      </div>
+      <div>
+        <p style="margin:0 0 14px;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#F0A9B7">Services</p>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:14px">
+          <a href="MBC%20Compliance.dc.html" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Statutory &amp; regulatory compliance</a>
+          <a href="MBC%20Other%20Services.dc.html#audit" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Auditing &amp; assurance</a>
+          <a href="MBC%20Other%20Services.dc.html#accounting" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Accounting &amp; financial services</a>
+          <a href="MBC%20Other%20Services.dc.html#tax" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Tax advisory</a>
+          <a href="MBC%20Other%20Services.dc.html#governance" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Corporate governance &amp; secretarial</a>
+          <a href="MBC%20Other%20Services.dc.html#training" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Training &amp; capacity building</a>
+        </div>
+      </div>
+      <div>
+        <p style="margin:0 0 14px;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#F0A9B7">Compliance</p>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:14px">
+          <a href="MBC%20Compliance.dc.html#nssa" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">NSSA</a>
+          <a href="MBC%20Compliance.dc.html#zimra" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">ZIMRA</a>
+          <a href="MBC%20Compliance.dc.html#cipz" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">CIPZ</a>
+          <a href="MBC%20Compliance.dc.html#praz" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">PRAZ</a>
+          <a href="MBC%20Compliance.dc.html#vendor" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Vendor registration</a>
+          <a href="MBC%20Fiscalisation.dc.html" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">Fiscalisation</a>
+        </div>
+      </div>
+      <div>
+        <p style="margin:0 0 14px;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#F0A9B7">Contact</p>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:14px">
+          <span>58 Fife Street, Bulawayo</span>
+          <a href="tel:+263774121012" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">(+263) 774 121 012</a>
+          <a href="https://wa.me/263774121012" target="_blank" rel="noopener" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">WhatsApp</a>
+          <a href="mailto:mmazha800@gmail.com" style="color:rgba(255,255,255,.7);transition:color .2s ease" style-hover="color:#fff">mmazha800@gmail.com</a>
+        </div>
+        <a href="MBC%20About.dc.html" style="display:inline-block;margin-top:18px;padding:11px 20px;border:1px solid rgba(255,255,255,.35);border-radius:999px;font-size:13.5px;color:#fff;transition:background .24s ease,color .24s ease" style-hover="background:#fff;color:#06333C">About the firm &rarr;</a>
+      </div>
+    </div>
+    <div style="max-width:1280px;margin:0 auto;padding:18px clamp(18px,4vw,40px) 36px;border-top:1px solid rgba(255,255,255,.14);display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase">
+      <span>&copy; 2026 MBC Consultancy &middot; Zimbabwe</span>
+      <span>Fiscalisation in partnership with Fiscal Shift</span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">class Component extends DCLogic {
+  componentDidMount() { this._id = (window.__mbcMountSeq = (window.__mbcMountSeq || 0) + 1); window.__mbcMount = this._id; this._tweens = []; this._triggers = []; this._tries = 0; this._alive = true; this._boot(); }
+  componentWillUnmount() {
+    this._alive = false;
+    clearTimeout(this._t);
+    if (this._onClick) document.removeEventListener('click', this._onClick, true);
+    if (window.__mbcMount !== this._id) return;
+    (this._tweens || []).forEach(t => { try { t.kill(); } catch (e) {} });
+    (this._triggers || []).forEach(t => { try { t.kill(); } catch (e) {} });
+    this._showAll();
+  }
+  _sel() { return this._q('[data-anim],[data-srow="1"],[data-svc="1"],[data-prow="1"]'); }
+  _q(s) { return Array.from(document.querySelectorAll(s)); }
+  _showAll() { this._sel().forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; }); }
+  _boot = () => {
+    if (!this._alive) return;
+    if (!window.gsap || !window.ScrollTrigger) {
+      if (this._tries++ < 60) { this._t = setTimeout(this._boot, 100); } else { this._showAll(); }
+      return;
+    }
+    const n = this._sel().length + this._q('[data-count]').length;
+    if ((n === 0 || n !== this._lastN) && this._tries++ < 80) {
+      this._lastN = n;
+      this._t = setTimeout(this._boot, 150);
+      return;
+    }
+    try { this._run(); } catch (e) { this._showAll(); }
+  }
+  _run() {
+    gsap.registerPlugin(ScrollTrigger);
+    this._tweens = []; this._triggers = [];
+    const track = tw => { if (tw) { this._tweens.push(tw); if (tw.scrollTrigger) this._triggers.push(tw.scrollTrigger); } return tw; };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { this._showAll(); return; }
+    const intro = this._q('[data-anim="line"]');
+    if (intro.length) track(gsap.fromTo(intro, {y: 24, opacity: 0}, {y: 0, opacity: 1, duration: .8, stagger: .09, ease: 'power3.out', clearProps: 'opacity,transform'}));
+    this._q('[data-srow="1"],[data-svc="1"],[data-prow="1"],[data-anim="reveal"]').forEach(el => {
+      track(gsap.fromTo(el, {y: 20, opacity: 0}, {y: 0, opacity: 1, duration: .65, ease: 'power2.out', clearProps: 'opacity,transform', immediateRender: false, scrollTrigger: {trigger: el, start: 'top 95%'}}));
+    });
+    this._q('[data-count]').forEach(el => {
+      const target = parseFloat(el.getAttribute('data-count'));
+      const prefix = el.getAttribute('data-prefix') || '';
+      const suffix = el.getAttribute('data-suffix') || '';
+      const obj = {v: 0};
+      track(gsap.to(obj, {v: target, duration: 1.3, ease: 'power2.out', scrollTrigger: {trigger: el, start: 'top 92%'}, onUpdate: () => { el.textContent = prefix + Math.round(obj.v) + suffix; }}));
+    });
+    const wipe = document.querySelector('[data-wipe="1"]');
+    if (wipe) {
+      gsap.set(wipe, {transformOrigin: 'bottom', scaleY: 0});
+      this._onClick = e => {
+        const a = e.target.closest && e.target.closest('a[href]');
+        if (!a) return;
+        const href = a.getAttribute('href') || '';
+        if (!href.endsWith('.dc.html') || a.target === '_blank' || e.metaKey || e.ctrlKey) return;
+        e.preventDefault();
+        gsap.timeline().set(wipe, {transformOrigin: 'bottom', scaleY: 0})
+          .to(wipe, {scaleY: 1, duration: .42, ease: 'power3.inOut'})
+          .add(() => { window.location.href = href; });
+      };
+      document.addEventListener('click', this._onClick, true);
+    }
+    ScrollTrigger.refresh();
+    setTimeout(() => { if (this._alive && !ScrollTrigger.getAll().length) this._showAll(); }, 1200);
+  }
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

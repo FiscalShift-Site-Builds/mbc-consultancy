@@ -1,0 +1,156 @@
+<section class="band">
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero__main">
+        <p class="eyebrow hero__eyebrow" data-rise>Contact us</p>
+        <h1 class="display" data-rise>Book a consultation.</h1>
+        <p class="lede hero__lede" data-rise>Tell us which authorities you are registered with, which returns are outstanding, and what the business needs next. We will come back with a scope and a fee.</p>
+        <div class="actionsplit">
+          <a href="https://wa.me/263774121012" target="_blank" rel="noopener">WhatsApp us <span class="arw" aria-hidden="true">&rarr;</span></a>
+          <a href="mailto:mmazha800@gmail.com">Send an email <span class="arw" aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+      <div class="hero__aside">
+        <h2 class="eyebrow eyebrow--sm">What we can take on</h2>
+        <nav class="ilist" aria-label="Service areas">
+          <a href="/compliance">Statutory &amp; regulatory compliance</a>
+          <a href="/services#audit">Auditing &amp; assurance</a>
+          <a href="/services#accounting">Accounting &amp; financial services</a>
+          <a href="/services#tax">Tax advisory</a>
+          <a href="/fiscalisation">Fiscalisation</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="enquiry" style="scroll-margin-top:140px">
+  <div class="wrap">
+    <div class="formgrid">
+      <div data-reveal>
+        <h2 class="eyebrow" style="margin-bottom:16px">What to send</h2>
+        <div class="ilist" style="margin-top:0">
+          <span>Company name and registration number, if registered</span>
+          <span>Which authorities you are already registered with</span>
+          <span>Any returns or contributions outstanding</span>
+          <span>What you need done, and by when</span>
+        </div>
+        <p class="fine" style="margin-top:22px;line-height:1.7">Prefer to talk? WhatsApp is usually quickest &mdash;
+          <a href="https://wa.me/263774121012" target="_blank" rel="noopener" style="border-bottom:1px solid var(--line-500)">(+263)&nbsp;774&nbsp;121&nbsp;012</a>.
+          Consultations are held at the Bulawayo office or remotely.</p>
+      </div>
+
+      <div data-reveal>
+        <h2 class="eyebrow" style="margin-bottom:16px">Send an enquiry</h2>
+
+        <form class="form" action="/api/contact" method="POST" data-enhance data-whatsapp="263774121012" novalidate>
+          <!-- Populated from ?enquiry= on the package links, so we know which
+               package prompted the enquiry. -->
+          <input type="hidden" name="enquiry" value="">
+          <input type="hidden" name="page" value="/contact">
+
+          <!-- Spam trap. Off-screen and out of the tab order; real people never
+               fill it, and a filled value is silently discarded server-side. -->
+          <p class="hp" aria-hidden="true">
+            <label>Leave this field empty
+              <input type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+            </label>
+          </p>
+
+          <div class="field field--pair" style="display:grid">
+            <div class="field">
+              <label class="field__label" for="f-name">Your name <span class="field__req" aria-hidden="true">*</span></label>
+              <input class="input" id="f-name" name="name" type="text" autocomplete="name" required>
+              <p class="field__error" aria-live="polite"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-company">Company</label>
+              <input class="input" id="f-company" name="company" type="text" autocomplete="organization">
+            </div>
+          </div>
+
+          <div class="field field--pair" style="display:grid">
+            <div class="field">
+              <label class="field__label" for="f-email">Email <span class="field__req" aria-hidden="true">*</span></label>
+              <input class="input" id="f-email" name="email" type="email" autocomplete="email" required>
+              <p class="field__error" aria-live="polite"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-phone">Phone or WhatsApp</label>
+              <input class="input" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+263">
+            </div>
+          </div>
+
+          <fieldset class="field" style="border:0;padding:0;margin:0">
+            <legend class="field__label" style="padding:0">What do you need?</legend>
+            <div class="checkset">
+              <label class="check"><input type="checkbox" name="services" value="Statutory &amp; regulatory compliance"> Statutory &amp; regulatory compliance</label>
+              <label class="check"><input type="checkbox" name="services" value="Auditing &amp; assurance"> Auditing &amp; assurance</label>
+              <label class="check"><input type="checkbox" name="services" value="Accounting &amp; financial services"> Accounting &amp; financial services</label>
+              <label class="check"><input type="checkbox" name="services" value="Tax advisory"> Tax advisory</label>
+              <label class="check"><input type="checkbox" name="services" value="Corporate governance &amp; secretarial"> Corporate governance &amp; secretarial</label>
+              <label class="check"><input type="checkbox" name="services" value="Training &amp; capacity building"> Training &amp; capacity building</label>
+              <label class="check"><input type="checkbox" name="services" value="Fiscalisation"> Fiscalisation</label>
+              <label class="check"><input type="checkbox" name="services" value="Not sure yet"> Not sure yet</label>
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label class="field__label" for="f-message">What does the business need? <span class="field__req" aria-hidden="true">*</span></label>
+            <textarea class="textarea" id="f-message" name="message" required
+              placeholder="Which authorities you are registered with, anything outstanding, and what you need done and by when."></textarea>
+            <p class="field__error" aria-live="polite"></p>
+          </div>
+
+          <!-- SPAM PROTECTION — see docs/DEPLOY.md step 4.
+               Uncomment and paste the Turnstile sitekey to turn it on. The
+               honeypot above works today with no setup. -->
+          <!-- <div class="cf-turnstile" data-sitekey="PASTE_TURNSTILE_SITEKEY"></div> -->
+
+          <div class="form__actions">
+            <button class="btn btn--solid" type="submit">Send enquiry</button>
+            <p class="form__note">We use what you send here only to reply to your enquiry. No mailing list.</p>
+          </div>
+
+          <p class="form__status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band--dark">
+  <div class="wrap">
+    <h2 class="eyebrow eyebrow--on-dark" style="padding:48px 0 8px" data-reveal>Reach us</h2>
+    <div class="reach">
+      <div class="reach__cell" data-reveal>
+        <p class="reach__label">Office</p>
+        <p class="reach__value">58 Fife Street<br>Bulawayo<br>Zimbabwe</p>
+      </div>
+      <div class="reach__cell" data-reveal>
+        <p class="reach__label">Phone &amp; WhatsApp</p>
+        <a class="reach__value" style="display:block" href="tel:+263774121012">(+263)&nbsp;774&nbsp;121&nbsp;012</a>
+        <a class="reach__sub" href="https://wa.me/263774121012" target="_blank" rel="noopener">Open WhatsApp <span class="arw" aria-hidden="true">&rarr;</span></a>
+      </div>
+      <div class="reach__cell" data-reveal>
+        <p class="reach__label">Email</p>
+        <a class="reach__value reach__value--break" style="display:block" href="mailto:mmazha800@gmail.com">mmazha800@gmail.com</a>
+      </div>
+    </div>
+    <div class="dark-note" data-reveal>
+      <p style="font-size:16px;line-height:1.7;color:var(--on-dark-3);max-width:44em">Consultations are held at the Bulawayo office or remotely, whichever suits the engagement.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div style="padding:48px 0">
+      <div data-reveal>
+        <h2 class="eyebrow" style="margin-bottom:16px">Already a Fiscal Shift client</h2>
+        <p style="font-size:17px;line-height:1.7;color:var(--ink-600);max-width:34em">Platform accounts, invoices and dashboards are on the Fiscal Shift portal. For anything to do with your subscription or FDMS connection, start there.</p>
+        <a class="btn btn--mono" style="display:inline-block;margin-top:20px;padding:0 0 3px;font-size:11.5px;border-bottom:1px solid var(--line-600);border-radius:0" href="/fiscalisation#portals">Fiscal Shift portals <span class="arw" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
