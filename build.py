@@ -175,6 +175,12 @@ BASE_RULES = {
 }
 
 
+# srcset is a comma-separated candidate list, each with an optional width or
+# density descriptor, so it needs its own pass rather than one capture group.
+SRCSET_ATTR_RE = re.compile(r'\bsrcset="([^"]*)"')
+SRCSET_URL_RE = re.compile(r"(^|,\s*)(/(?!/)[^\s,]+)")
+
+
 def apply_base(text, kind):
     """Prefix every root-absolute path with BASE. A no-op at a domain root."""
     if not BASE:
@@ -184,6 +190,13 @@ def apply_base(text, kind):
         for m in reversed(list(pattern.finditer(text))):
             start, end = m.span(1)
             text = text[:start] + BASE + text[start:end] + text[end:]
+    if kind == "html":
+        for m in reversed(list(SRCSET_ATTR_RE.finditer(text))):
+            start, end = m.span(1)
+            fixed = SRCSET_URL_RE.sub(
+                lambda c: c.group(1) + BASE + c.group(2), m.group(1)
+            )
+            text = text[:start] + fixed + text[end:]
     return text
 
 
@@ -321,6 +334,21 @@ def check(built):
         for artefact in (".dc.html", "style-hover", "x-dc", "support.js", "%20"):
             if artefact in text:
                 problems.append("%s: prototype artefact %r" % (where, artefact))
+
+        # 2b. Every root-absolute reference carries the base prefix. A missed
+        # attribute is invisible at a domain root and 404s on a sub-path build,
+        # which is how srcset shipped broken once already.
+        if BASE:
+            for attr, url in re.findall(
+                r'\b(href|src|action|srcset|content)="(/(?!/)[^"]*)"', text
+            ):
+                for candidate in (url.split(",") if attr == "srcset" else [url]):
+                    candidate = candidate.strip().split()[0] if candidate.strip() else ""
+                    if candidate and not candidate.startswith(BASE + "/"):
+                        problems.append(
+                            "%s: %s=%r missing base prefix %r"
+                            % (where, attr, candidate, BASE)
+                        )
 
         # 3. Internal links resolve to a real page, and anchors to a real id.
         for raw in HREF_RE.findall(text):
