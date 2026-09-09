@@ -418,15 +418,41 @@
   }
 
   /* ------------------------------------------------------------------------
-     Page transition — teal wipe covers, then navigates. The arrival curtain
-     on the next page is pure CSS, so the two halves read as one move.
+     Page transition — teal wipe covers with the mark centred on it, then
+     navigates. The arrival curtain on the next page is pure CSS and holds the
+     mark in the same place, so the two halves read as one move.
      ------------------------------------------------------------------------ */
   function initTransition() {
     var wipe = document.querySelector('.wipe');
     if (!wipe || reduceMotion) return;
 
+    // The cover is the panel's, not the wipe's. The mark inside it transitions
+    // too and finishes first, so waiting on whatever bubbles up would navigate
+    // before the screen was actually covered.
+    var panel = wipe.querySelector('.wipe__panel') || wipe;
+    var pending = null;
+
+    function go() {
+      if (!pending) return;
+      var href = pending;
+      pending = null;
+      // Tells the next page the mark is already up, so its curtain carries it
+      // instead of fading it in again. Storage can throw; the transition must
+      // not depend on it.
+      try {
+        sessionStorage.setItem('mbc-nav', '1');
+      } catch (err) {}
+      location.href = href;
+    }
+
+    // Navigate on the cover completing, but never depend on it firing.
+    panel.addEventListener('transitionend', function (e) {
+      if (e.target === panel && e.propertyName === 'transform') go();
+    });
+
     // A restored bfcache page would otherwise come back still covered.
     window.addEventListener('pageshow', function () {
+      pending = null;
       wipe.classList.remove('is-covering');
     });
 
@@ -455,15 +481,9 @@
       if (url.pathname === location.pathname && url.hash) return;
 
       e.preventDefault();
-      var done = false;
-      function go() {
-        if (done) return;
-        done = true;
-        location.href = a.href;
-      }
-      // Navigate on transition end, but never depend on it firing.
-      wipe.addEventListener('transitionend', go, { once: true });
-      setTimeout(go, 520);
+      if (pending) return; // Already leaving; a second click cannot redirect it.
+      pending = a.href;
+      setTimeout(go, 600);
       wipe.classList.add('is-covering');
     });
   }

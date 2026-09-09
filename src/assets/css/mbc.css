@@ -1959,6 +1959,54 @@ p {
   }
 }
 
+/* The mark's counter-move. Same box height, easing, duration and delay as
+   curtainUp, so the two cancel exactly: the teal lifts away while the mark
+   holds still in the middle of the viewport. */
+@keyframes curtainHold {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* The mark's own timeline, over the whole curtain. It fades up on the covered
+   screen, holds at full, and is gone by 72% — the moment the curtain's lower
+   edge, accelerating away, would otherwise sweep up past it. */
+@keyframes markArrive {
+  0% {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  30%,
+  45% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  72%,
+  100% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+
+/* Same, less the fade-up: on a page reached through the departure wipe the
+   mark is already on screen at full, so the curtain carries it rather than
+   starting it over. */
+@keyframes markCarry {
+  0%,
+  45% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  72%,
+  100% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+
 /* Arrival curtain — pure CSS so it runs on first paint without waiting for JS */
 .curtain {
   position: fixed;
@@ -1966,8 +2014,29 @@ p {
   z-index: 95;
   background: var(--teal-900);
   transform: translateY(-100%);
-  animation: curtainUp 0.55s var(--ease-inout) both;
+  animation: curtainUp 0.55s var(--ease-inout) 0.45s both;
   pointer-events: none;
+  /* The mark holds still while this box travels out from under it, so without
+     a clip its tail end would be left hanging over the page. */
+  overflow: hidden;
+}
+
+.curtain__hold {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: curtainHold 0.55s var(--ease-inout) 0.45s both;
+}
+
+/* 1s: the 0.45s hold plus the 0.55s lift. */
+.curtain__mark {
+  animation: markArrive 1s linear both;
+}
+
+.from-nav .curtain__mark {
+  animation-name: markCarry;
 }
 
 /* Departure wipe — driven by JS on internal navigation */
@@ -1975,16 +2044,56 @@ p {
   position: fixed;
   inset: 0;
   z-index: 96;
-  background: var(--teal-900);
-  transform: scaleY(0);
-  transform-origin: bottom;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
   pointer-events: none;
-  will-change: transform;
 }
 
 .wipe.is-covering {
+  visibility: visible;
+}
+
+/* The panel scales, the mark does not — otherwise the mark would be squashed
+   flat and stretched back out as the cover runs. */
+.wipe__panel {
+  position: absolute;
+  inset: 0;
+  background: var(--teal-900);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  will-change: transform;
+}
+
+.wipe.is-covering .wipe__panel {
   transform: scaleY(1);
   transition: transform 0.4s var(--ease-inout);
+}
+
+.wipe__mark {
+  position: relative;
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+}
+
+/* Fades up from 0.18s, by which point the panel is half up, and lands with the
+   cover at 0.4s — the mark is then held through the swap by the next page's
+   curtain. Starting any earlier floats it over content not yet covered. */
+.wipe.is-covering .wipe__mark {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.22s var(--ease) 0.18s, transform 0.22s var(--ease) 0.18s;
+}
+
+/* The mark itself, in the on-dark colourway the footer already uses. It is a
+   background rather than an <img> so the curtain — which paints on every page
+   load — fetches it during CSS parse, long before the first click needs it. */
+.curtain__mark,
+.wipe__mark {
+  width: clamp(168px, 34vw, 264px);
+  aspect-ratio: 292.7 / 100;
+  background: url('../img/mbc-mark-light.svg') center / contain no-repeat;
 }
 
 /* Scroll reveal. The hidden state is only applied when JS is present, so

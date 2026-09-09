@@ -8,8 +8,12 @@
 <link rel="canonical" href="https://fiscalshift-site-builds.github.io/mbc-consultancy/services">
 
 <!-- Applied before first paint so scroll-reveal starts hidden without a flash.
-     If scripting is off this class is never set and all content is visible. -->
-<script>document.documentElement.className+=' js';</script>
+     If scripting is off this class is never set and all content is visible.
+     `from-nav` marks a page reached through the departure wipe, which has
+     already faded the mark up and is still showing it: the arrival curtain
+     carries that mark on rather than fading it in a second time, which across
+     the swap would read as a flicker. -->
+<script>(function(){var h=document.documentElement;h.className+=' js';try{if(sessionStorage.getItem('mbc-nav')){h.className+=' from-nav';sessionStorage.removeItem('mbc-nav');}}catch(e){}})();</script>
 
 <link rel="preload" href="/mbc-consultancy/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/mbc-consultancy/assets/css/mbc.css">
@@ -62,8 +66,13 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<div class="curtain" aria-hidden="true"></div>
-<div class="wipe" aria-hidden="true"></div>
+<div class="curtain" aria-hidden="true">
+  <span class="curtain__hold"><span class="curtain__mark"></span></span>
+</div>
+<div class="wipe" aria-hidden="true">
+  <span class="wipe__panel"></span>
+  <span class="wipe__mark"></span>
+</div>
 
 <header class="header">
   <div class="wrap">
