@@ -360,6 +360,22 @@ p {
   }
 }
 
+/* The strip collapses on scroll below 900px — see the condensed rules in the
+   responsive section. Wrapping it in a grid row is what makes the collapse
+   animate: 1fr -> 0fr is interpolatable, auto -> 0 is not. */
+.header__top {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  transition: grid-template-rows 0.28s var(--ease);
+}
+
+.header__top > .topbar {
+  overflow: hidden;
+  /* Grid items floor at their content height unless this is spelled out, which
+     would leave the row stuck one line tall instead of collapsing. */
+  min-height: 0;
+}
+
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -396,27 +412,45 @@ p {
   padding: 14px 0;
 }
 
+/* The supplied logo is a tick-and-serif mark whose own "MASH BUSINESS
+   CONSULTANCY" line only becomes legible above ~180px tall. So the mark sits
+   at a readable size and the firm's name is re-set beside it in the site's own
+   type, where it stays sharp and scales down cleanly. */
 .brand {
   display: flex;
-  align-items: baseline;
-  gap: 11px;
+  align-items: center;
+  gap: 13px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.brand__logo {
+  width: auto;
+  height: 40px;
+  display: block;
   flex-shrink: 0;
 }
 
-.brand__mark {
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -0.045em;
-  color: var(--teal-900);
-  line-height: 1;
-}
-
-.brand__sub {
+.brand__name {
   font-family: var(--mono);
   font-size: 10.5px;
-  letter-spacing: 0.24em;
+  line-height: 1.5;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-400);
+  padding-left: 13px;
+  border-left: 1px solid var(--line-300);
+}
+
+/* Two short lines instead of one long one: the lockup stays roughly square and
+   does not push the nav off the masthead at tablet widths. */
+.brand__name > span {
+  display: block;
+  white-space: nowrap;
+}
+
+.brand:hover .brand__name {
+  color: var(--ink-900);
 }
 
 /* -- Nav: pill strip that becomes a swipeable carousel when it overflows --- */
@@ -1136,6 +1170,11 @@ p {
 }
 
 .pkg__cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.14em;
@@ -1246,6 +1285,240 @@ p {
 .two-col--wide {
   grid-template-columns: 1.1fr 0.9fr;
   align-items: start;
+}
+
+/* --------------------------------------------------------------------------
+   18a. Photography — duotone bands and column figures
+
+   Every photograph is stock, so it is treated rather than shown straight:
+   desaturated, then colourised teal through a blend layer, then veiled with a
+   gradient. Three reasons. It keeps six unrelated photographs looking like one
+   set; it guarantees the contrast for text laid over them; and it stops the
+   page reading as a template with pictures dropped in.
+   -------------------------------------------------------------------------- */
+.photoband {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: clamp(300px, 27vw, 420px);
+  background: var(--teal-900);
+}
+
+.photoband__img {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.photoband__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* Grey first, so the colourise below lands on luminance alone and every
+     photograph arrives in the same hue whatever it was shot in. */
+  filter: grayscale(1) contrast(1.08) brightness(1.04);
+}
+
+/* Colourise. `color` blend keeps the photograph's luminance and takes the
+   overlay's hue, which is what makes a duotone rather than a wash. */
+.photoband__img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--teal-900) 0%, var(--cyan-700) 100%);
+  mix-blend-mode: color;
+  /* Short of full, so some of the photograph's own colour survives and the
+     frame does not read as a flat swatch. */
+  opacity: 0.88;
+}
+
+/* Readability veil, densest where the copy sits. */
+/* Dense under the copy on the left, close to clear on the right, so the
+   photograph is legible as a photograph in the half that carries no text. */
+.photoband::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    96deg,
+    rgba(6, 51, 60, 0.93) 0%,
+    rgba(6, 51, 60, 0.86) 26%,
+    rgba(6, 51, 60, 0.5) 56%,
+    rgba(6, 51, 60, 0.16) 100%
+  );
+  z-index: 0;
+}
+
+.photoband__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 56px var(--gutter);
+}
+
+.photoband__title {
+  font-size: clamp(28px, 4.2vw, 46px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  color: var(--white);
+  max-width: 20em;
+  margin: 14px 0 0;
+}
+
+.photoband__text {
+  margin: 16px 0 0;
+  font-size: 16.5px;
+  line-height: 1.65;
+  color: var(--on-dark-2);
+  max-width: 34em;
+}
+
+.photoband__cta {
+  margin-top: 26px;
+}
+
+/* -- Column figure ---------------------------------------------------------
+   Shown much closer to the original: it is a photograph of a real place and
+   the caption says so, which the duotone treatment would undercut. */
+.figure {
+  margin: 26px 0 0;
+  max-width: 460px;
+}
+
+.figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 2px;
+  filter: saturate(0.82) contrast(1.03);
+}
+
+.figure figcaption {
+  margin-top: 11px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+.figure--on-dark figcaption {
+  color: var(--on-dark-4);
+}
+
+/* --------------------------------------------------------------------------
+   18b. Free compliance check — the offer the client asked to make visible
+   -------------------------------------------------------------------------- */
+.offer {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  column-gap: 32px;
+  row-gap: 22px;
+  margin: 52px 0;
+  padding: 34px 36px;
+  background: var(--tint-050);
+  border: 1px solid var(--line-300);
+  /* The tick side gets the accent, so the plate reads as the brand's offer
+     rather than a generic callout box. */
+  border-left: 3px solid var(--cyan-600);
+}
+
+.offer__mark {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 1px solid var(--line-300);
+}
+
+.offer__mark img {
+  width: 32px;
+  height: auto;
+  display: block;
+}
+
+.offer__eyebrow {
+  margin-bottom: 12px;
+}
+
+.offer__title {
+  font-size: clamp(24px, 3vw, 31px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+  margin-bottom: 12px;
+}
+
+.offer__text {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink-600);
+  max-width: 42em;
+}
+
+.offer__list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 18px;
+  font-size: 14.5px;
+  color: var(--ink-600);
+}
+
+.offer__list > span {
+  position: relative;
+  padding-left: 19px;
+}
+
+.offer__list > span::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cyan-600);
+}
+
+.offer__cta {
+  align-self: center;
+  white-space: nowrap;
+}
+
+/* On dark bands the plate inverts, so the same block can close a dark section. */
+.offer--dark {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--rule-dark);
+  border-left-color: var(--cyan-300);
+  color: var(--on-dark-2);
+}
+
+.offer--dark .offer__title {
+  color: var(--white);
+}
+
+.offer--dark .offer__text,
+.offer--dark .offer__list {
+  color: var(--on-dark-2);
+}
+
+.offer--dark .offer__list > span::before {
+  background: var(--cyan-300);
+}
+
+.offer--dark .offer__mark {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--rule-dark);
 }
 
 .closer {
@@ -1489,10 +1762,11 @@ p {
   display: flex;
   align-items: flex-start;
   gap: 10px;
+  min-height: 34px;
   font-size: 15px;
   color: var(--ink-600);
   cursor: pointer;
-  padding: 4px 0;
+  padding: 6px 0;
 }
 
 .check input {
@@ -1621,15 +1895,14 @@ p {
   gap: 44px;
 }
 
-.footer__mark {
-  font-size: clamp(24px, 2.8vw, 30px);
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: -0.04em;
+.footer__logo {
+  width: auto;
+  height: clamp(46px, 5.4vw, 58px);
+  display: block;
 }
 
-.footer__sub {
-  margin: 6px 0 16px;
+.footer__name {
+  margin: 12px 0 16px;
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.22em;
@@ -1783,6 +2056,74 @@ p {
 }
 
 @media (max-width: 900px) {
+  .photoband {
+    min-height: 0;
+  }
+
+  .photoband__inner {
+    padding: 48px var(--gutter) 52px;
+  }
+
+  /* Copy runs the full width here, so the veil has to run vertically instead
+     of across — clear at the top of the frame, dense where the text lands. */
+  .photoband::after {
+    background: linear-gradient(
+      180deg,
+      rgba(6, 51, 60, 0.42) 0%,
+      rgba(6, 51, 60, 0.8) 42%,
+      rgba(6, 51, 60, 0.94) 100%
+    );
+  }
+
+  .photoband__img img {
+    /* The 2.4:1 crop is too shallow to fill a taller stacked band; anchoring
+       to the top keeps the subject rather than the ceiling. */
+    object-position: 50% 30%;
+  }
+
+  /* The mark and the button stop earning their columns — the plate becomes a
+     single stack with the tick above the headline. */
+  .offer {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+    margin: 40px 0;
+  }
+
+  .offer__cta {
+    justify-self: start;
+    align-self: start;
+  }
+
+  /* Sticky header condensed on scroll. On a 390px phone it was 158px — 19% of
+     the viewport, permanently. Past the fold the top bar's address and email
+     have done their job (both repeat in the footer and on /contact), so the row
+     folds away and the lockup steps down, leaving ~100px. */
+  .header--condensed .header__top {
+    grid-template-rows: minmax(0, 0fr);
+  }
+
+  /* Taken out of the tab order once it has finished folding — a zero-height row
+     is still focusable, and tabbing to an invisible phone number is worse than
+     not having it. */
+  .header--condensed .header__top > .topbar {
+    visibility: hidden;
+    transition: visibility 0s 0.28s;
+  }
+
+  .header--condensed .masthead {
+    padding-top: 8px;
+    padding-bottom: 10px;
+  }
+
+  .header--condensed .brand__logo {
+    height: 28px;
+  }
+
+  .masthead,
+  .brand__logo {
+    transition: height 0.28s var(--ease), padding 0.28s var(--ease);
+  }
+
   .hero,
   .two-col,
   .two-col--wide,
@@ -1852,8 +2193,15 @@ p {
     width: 100%;
   }
 
-  .brand__mark {
-    font-size: 26px;
+  .brand__logo {
+    height: 34px;
+  }
+
+  .brand__name {
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    gap: 10px;
+    padding-left: 11px;
   }
 
   .actionsplit > a + a {
@@ -1888,6 +2236,14 @@ p {
   .topbar__links {
     gap: 14px;
   }
+}
+
+/* Below this the address and the phone number stop fitting on one line, and the
+   bar doubles in height. The phone number is the one that earns its place. */
+@media (max-width: 380px) {
+  .topbar__addr {
+    display: none;
+  }
 
   .reach__cell {
     padding-right: 0;
@@ -1895,6 +2251,39 @@ p {
 
   .footer__cols {
     gap: 32px;
+  }
+}
+
+/* -- Touch sizing -----------------------------------------------------------
+   Keyed off the pointer, not the viewport: a 1024px tablet needs these and a
+   narrow desktop window does not. Everything here only grows a target, so the
+   visual design is unchanged on a mouse. */
+@media (pointer: coarse) {
+  .nav__arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  /* Stacked link lists read as a wall of 21px rows on a phone. Padding rather
+     than gap, so the target grows without opening the list up. */
+  .footer__list {
+    gap: 0;
+  }
+
+  .footer__list a,
+  .footer__list span {
+    padding: 9px 0;
+  }
+
+  .check input {
+    width: 20px;
+    height: 20px;
+  }
+
+  .topbar a {
+    display: inline-block;
+    padding: 5px 0;
   }
 }
 
@@ -1996,8 +2385,23 @@ p {
   .header,
   .nav,
   .skip,
-  .footer__band {
+  .footer__band,
+  /* Decorative, and a full-bleed dark photograph is most of an ink cartridge. */
+  .photoband__img {
     display: none !important;
+  }
+
+  .photoband,
+  .photoband::after {
+    background: #fff !important;
+  }
+
+  .photoband__title,
+  .photoband__text,
+  /* The band's eyebrow is a light rose meant for a dark ground; on paper it
+     would be all but invisible. */
+  .photoband .eyebrow {
+    color: #000 !important;
   }
 
   body {
@@ -2013,6 +2417,13 @@ p {
   .band--dark *,
   .footer * {
     color: #000 !important;
+  }
+
+  /* The footer ships the mark in its on-dark colourway — white letters, cyan
+     tick — which vanishes once the footer prints on white. Inverting is enough
+     to bring it back as a black mark; the alpha channel is untouched. */
+  .footer__logo {
+    filter: grayscale(1) invert(1);
   }
 
   .js [data-reveal],
