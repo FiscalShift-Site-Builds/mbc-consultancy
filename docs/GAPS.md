@@ -22,6 +22,7 @@ to what it publishes.
 | "8 accounting systems supported" | Home, Fiscalisation | Kept, because the Fiscalisation page lists exactly 8. Confirm the platform supports all 8. |
 | "Real time transmission to FDMS" | Home, Fiscalisation | Kept — describes how VFD software works rather than a performance promise. |
 | "We use what you send here only to reply to your enquiry. No mailing list." | Contact form | I wrote this, and the build honours it. Confirm you are happy to commit to it. |
+| "Start with a free compliance check" — what it covers, "No charge" | Home, Compliance, Contact lede | **New.** Built from the client's own note, *"We do free compliance checks. And assessment."* The three bullets (registration status, outstanding returns, what to fix first) are my wording for what a check plausibly covers — confirm they match what is actually done for free, and whether there is a limit on it. |
 
 **Softened on your instruction** (was unsourced, now non-numeric): "48 hrs
 average go-live" → "Rapid — go-live after sign-up"; "24/7 FDMS monitoring" →
@@ -31,20 +32,93 @@ walkthrough" → "A walkthrough". The originals are in git if you can source the
 **Not added, per your instruction to leave them out:** founding year, award
 name, ZIMRA agent number, a WhatsApp number distinct from the mobile line.
 
-### A2. The logo you supplied does not match the site's identity
+### A2. ~~The logo you supplied does not match the site's identity~~ — placed
 
-`project/assets/mbc-logo.png` reads **"MASH BUSINESS CONSULTANCY"** in a grey
-serif with a green tick. The site is **"MBC Consultancy"**, all-sans (Archivo),
-deep teal and cyan. It is also on an opaque white background, so it cannot sit
-on the teal footer.
+**Done.** The client's note — *"the logo can't be seen"* — settled the open
+question in favour of using their artwork rather than the typeset wordmark.
 
-Chat 3's decision — *"Wordmark only — set MBC in type"* — still holds, so the
-PNG is **unused**. I built the favicon and app icons from the tick motif in the
-site's own palette, which keeps the visual link without the mismatch.
+There was no vector master: the PDF turned out to embed the same 691×418 bitmap
+as the white-background JPEG. The sharpest original is the light-on-black JPEG
+(969×362 of logo), so `tools/trace_logo.py` traces that into SVG once, and every
+brand surface now comes off it:
 
-**You need to decide:** commission a logo redraw that matches the new identity,
-or change the site to match the existing logo (name, colours and serif). Leaving
-both in circulation means two different brands.
+| Surface | Asset |
+| --- | --- |
+| Header, every page | `mbc-mark.svg` at 40px (34px on mobile) |
+| Footer, every page | `mbc-mark-light.svg` at 46–58px |
+| Favicon, app icons | the tick, tinted cyan on `--teal-900` |
+| Share card (`og.png`) | the mark in the on-dark colourway |
+| Full lockup master | `tools/brand/mbc-logo{,-light}.svg` |
+
+Two deliberate departures from the supplied artwork, both worth confirming with
+the client:
+
+- **Letters at `#8D8D8D`, not `#B8B8B8`.** The white-background file sets them
+  at `#B8B8B8`, which is 1.9:1 on white — faint enough to reproduce the
+  complaint that started this. `#8D8D8D` is the same silver measured off their
+  own light-on-black file and reads at 3.3:1.
+- **The tick goes `--cyan-300` on dark ground.** The logo teal `#1E6360` on the
+  `--teal-900` footer is too close in value to read; the site's own cyan keeps
+  the tick as the loudest thing in the mark.
+
+**The tagline is not on the site.** "MASH BUSINESS CONSULTANCY" is 5% of the
+lockup's height — it needs the logo about 180px tall before it is legible, which
+no placement on the page gives it. So the mark carries the tick and letters, and
+the firm's name is re-set beside it in Archivo, where it stays sharp at any
+size. The full lockup is kept in `tools/brand/` for print and stationery.
+
+That leaves the naming question open but no longer contradictory: the logo and
+the header now both say **Mash Business Consultancy**, while body copy and the
+page titles still say **MBC Consultancy**. That reads as legal name vs. short
+name, which is normal — but if the client wants one of the two everywhere, it is
+a find-and-replace in `src/pages/` plus the `PAGES` table in `build.py`.
+
+### A2b. Three things the client's own uploads say that the site does not
+
+`project/uploads/` is eight screenshots of the client's **WhatsApp Business
+catalogue**. Read for imagery they were no use — flyers with baked-in text at
+486×1080, and the people in them are stock photography inside those flyers, not
+the firm. But they answer three open questions:
+
+| Their catalogue says | The site says |
+| --- | --- |
+| **Mildred Mashingaidze**, "award-winning business consultant. Expert guidance on CIPZ, ZIMRA, NSSA, NEC & PRAZ" | "Led by an award-winning consultant" — no name (A1) |
+| TaRMS Registration **US$100**, Compliance Packages **US$50** | prices removed, "Request a quote" |
+| A **Master of Ceremonies / moderator** service — social, corporate, educational and cultural events | not mentioned anywhere |
+
+None of this is on the site, and all three are the client's call:
+
+- **The name.** "Led by an award-winning consultant" is weak precisely because
+  it is anonymous. Naming Mildred Mashingaidze on About, with the award, would
+  do more for trust than anything else available. The award still needs naming
+  — the catalogue asserts it without saying which.
+- **The prices.** Publishing a from-price generally makes prospects
+  self-select better than "request a quote" does, and the numbers are already
+  public in their own catalogue, so the site is the only place hiding them.
+- **The MC service.** It sits oddly against a compliance brief and may be
+  deliberately kept separate. Worth one question rather than an assumption.
+
+Also note the catalogue leans **green**, where the site is teal/cyan. If the
+catalogue is staying in circulation, one of the two should move.
+
+### A2c. ~~The photography is stock~~ — stock is the decision
+
+Seven Unsplash photographs are on the site, one per page plus a second on
+Services, all free-licensed for commercial use and all recorded in
+**[docs/photo-credits.md](photo-credits.md)** with photographer, photo id and
+placement. Confirmed as the finished set; nothing here is waiting on the client.
+
+Two constraints came with the licence and are written up in that file. They are
+settled rather than open, but they bind future edits:
+
+- The home band shows identifiable people who do not work for MBC. Ordinary
+  editorial use as built — but it must never be captioned "our team", given a
+  name, or paired with a testimonial, because that converts permitted use into
+  an implied endorsement.
+- The Contact band is a real Bulawayo building that is **not** 58 Fife Street.
+  Copy over it stays at city level; the address stays in the Reach us block. A
+  draft headline reading "58 Fife Street, Bulawayo." over that frame was caught
+  and changed.
 
 ### A3. The public email is a personal Gmail
 

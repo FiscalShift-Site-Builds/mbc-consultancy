@@ -1,0 +1,123 @@
+<!doctype html><meta charset=utf-8><title>MBC — graphics directions</title>
+<!-- Decision aid, not part of the site. Open it straight off disk:
+       xdg-open docs/graphics-directions.html
+     Built in answer to the client's note "Graphics… maybe some pictures, generic".
+     Pick a direction (they combine fine) and it gets built into src/. -->
+<link rel="stylesheet" href="../site/assets/css/mbc.css">
+<style>
+  body{background:#fff}
+  .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+       color:#fff;background:var(--teal-900);padding:10px 18px;margin:0}
+  .lab span{color:var(--cyan-300)}
+  .note{font-size:13.5px;color:var(--ink-600);padding:14px 18px 0;max-width:70em;margin:0}
+
+  /* ---------- A. Brand watermark ---------- */
+  .wm{position:relative;overflow:hidden;background:var(--teal-900);color:#fff;padding:64px 40px}
+  .wm__art{position:absolute;right:-40px;top:-60px;width:420px;opacity:.07;pointer-events:none}
+  .wm__art img{width:100%;display:block;filter:brightness(0) invert(1)}
+  .wm h3{font-size:38px;letter-spacing:-.04em;margin:0 0 14px;position:relative}
+  .wm p{color:var(--on-dark-2);max-width:34em;margin:0;position:relative;font-size:16px;line-height:1.65}
+  .wm-lite{position:relative;overflow:hidden;background:var(--tint-050);padding:56px 40px}
+  .wm-lite__art{position:absolute;right:30px;bottom:-30px;width:300px;opacity:.09;pointer-events:none}
+  .wm-lite__art img{width:100%;display:block}
+  .wm-lite h3{font-size:34px;letter-spacing:-.04em;margin:0 0 12px;position:relative}
+  .wm-lite p{color:var(--ink-600);max-width:34em;margin:0;position:relative}
+
+  /* ---------- B. Editorial diagram ---------- */
+  .dg{padding:52px 40px;background:#fff}
+  .dg svg{width:100%;height:auto;max-width:840px;display:block}
+  .dgd{padding:52px 40px;background:var(--teal-900)}
+  .dgd svg{width:100%;height:auto;max-width:840px;display:block}
+
+  /* ---------- C. Duotone photography ---------- */
+  .ph{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:stretch}
+  .ph__fig{position:relative;min-height:340px;overflow:hidden}
+  .ph__fig::after{content:attr(data-cap);position:absolute;left:16px;bottom:14px;
+       font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+       color:rgba(255,255,255,.85)}
+  .ph__txt{padding:52px 40px;background:var(--tint-050)}
+  .ph__txt h3{font-size:32px;letter-spacing:-.04em;margin:0 0 12px}
+  .ph__txt p{color:var(--ink-600);margin:0;max-width:32em}
+  /* Stand-in for a supplied photograph: mid-grey structure at photographic
+     contrast, so the duotone treatment can be judged before real photos land. */
+  .stand{position:absolute;inset:0;
+     background:
+       radial-gradient(70% 90% at 25% 15%, #f2f2f2 0%, #cfcfcf 38%, #8f8f8f 70%, #4a4a4a 100%),
+       repeating-linear-gradient(115deg, rgba(0,0,0,.10) 0 22px, rgba(255,255,255,.07) 22px 46px);
+     background-blend-mode:multiply}
+  .duo{position:absolute;inset:0;background:linear-gradient(150deg,#06333C,#0097AD);
+     mix-blend-mode:color;opacity:.92}
+  .duo2{position:absolute;inset:0;background:var(--teal-900);opacity:.28}
+  .flat .duo,.flat .duo2{display:none}
+</style>
+
+<p class="lab">Direction <span>A</span> — brand watermark &nbsp;·&nbsp; the logo's own tick, oversized and near-invisible, behind section copy</p>
+<p class="note">No new assets, no licensing, nothing to source. Reinforces the mark the client says cannot be seen. Works on dark bands and light ones.</p>
+<div class="wm">
+  <div class="wm__art"><img src="../site/assets/img/mbc-tick.svg" alt=""></div>
+  <h3>Five doors, one adviser.</h3>
+  <p>NSSA, ZIMRA, CIPZ, PRAZ and Ministry of Finance vendor registration — handled as one engagement rather than five conversations.</p>
+</div>
+<div class="wm-lite">
+  <div class="wm-lite__art"><img src="../site/assets/img/mbc-tick.svg" alt=""></div>
+  <h3>Start with a free compliance check.</h3>
+  <p>Before anything is quoted, we assess where the business actually stands.</p>
+</div>
+
+<p class="lab">Direction <span>B</span> — editorial diagrams &nbsp;·&nbsp; drawn in the palette, explaining the actual service</p>
+<p class="note">Highest perceived effort and the only direction that also does a job of work: it explains the offer. Two would be needed — the authorities fan-in below, and the fiscalisation data path on /fiscalisation.</p>
+<div class="dg">
+  <svg viewBox="0 0 840 300" role="img" aria-label="Five authorities handled through one adviser">
+    <defs><marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#A9BCC0"/></marker></defs>
+    <g font-family="Archivo, sans-serif">
+      <g font-size="15" font-weight="700" fill="#0E262C">
+        <g><rect x="0" y="8" width="176" height="44" rx="22" fill="#F1F6F7" stroke="#D7E0E2"/><text x="24" y="35">NSSA</text></g>
+        <g><rect x="0" y="66" width="176" height="44" rx="22" fill="#F1F6F7" stroke="#D7E0E2"/><text x="24" y="93">ZIMRA</text></g>
+        <g><rect x="0" y="124" width="176" height="44" rx="22" fill="#F1F6F7" stroke="#D7E0E2"/><text x="24" y="151">CIPZ</text></g>
+        <g><rect x="0" y="182" width="176" height="44" rx="22" fill="#F1F6F7" stroke="#D7E0E2"/><text x="24" y="209">PRAZ</text></g>
+        <g><rect x="0" y="240" width="176" height="44" rx="22" fill="#F1F6F7" stroke="#D7E0E2"/><text x="24" y="267">Vendor registration</text></g>
+      </g>
+      <g fill="none" stroke="#C9D6D9" stroke-width="1.5" marker-end="url(#ar)">
+        <path d="M176 30 C 260 30 260 146 356 146"/>
+        <path d="M176 88 C 250 88 250 146 356 146"/>
+        <path d="M176 146 L356 146"/>
+        <path d="M176 204 C 250 204 250 146 356 146"/>
+        <path d="M176 262 C 260 262 260 146 356 146"/>
+      </g>
+      <g>
+        <rect x="366" y="106" width="188" height="80" rx="12" fill="#06333C"/>
+        <text x="390" y="142" font-size="17" font-weight="700" fill="#fff">One adviser</text>
+        <text x="390" y="164" font-size="12.5" fill="#7FE3EF" font-family="ui-monospace, monospace"
+              letter-spacing="1.2">MBC CONSULTANCY</text>
+      </g>
+      <path d="M554 146 L636 146" fill="none" stroke="#C9D6D9" stroke-width="1.5" marker-end="url(#ar)"/>
+      <g>
+        <rect x="646" y="106" width="194" height="80" rx="12" fill="#fff" stroke="#0097AD" stroke-width="1.5"/>
+        <text x="668" y="140" font-size="15.5" font-weight="700" fill="#0E262C">One filing calendar</text>
+        <text x="668" y="163" font-size="13" fill="#566A70">Nothing lapses in between</text>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<p class="lab">Direction <span>C</span> — duotone photography &nbsp;·&nbsp; needs real photos from the client</p>
+<p class="note">The strongest trust signal, and the only one the client cannot get without sending files: the office at 58 Fife Street, Mildred at work, a signing or a client meeting. The duotone keeps any phone photo inside the palette and hides uneven lighting. Left panel shows the treatment, right the same source untreated — the grey block is a stand-in, not a real photo.</p>
+<div class="ph">
+  <div class="ph__fig" data-cap="Treated — teal/cyan duotone">
+    <div class="stand"></div><div class="duo"></div><div class="duo2"></div>
+  </div>
+  <div class="ph__txt">
+    <h3>Precision, reliability and deep regulatory knowledge.</h3>
+    <p>A photograph carries the office, the person and the city in a way a diagram cannot. It is also the one thing on this page that has to come from the client.</p>
+  </div>
+</div>
+<div class="ph">
+  <div class="ph__fig flat" data-cap="Untreated, for comparison">
+    <div class="stand"></div>
+  </div>
+  <div class="ph__txt" style="background:#fff">
+    <h3>Same source, no treatment.</h3>
+    <p>Untreated phone photography is what makes a small-firm site look thrown together. The duotone is what makes it look deliberate.</p>
+  </div>
+</div>

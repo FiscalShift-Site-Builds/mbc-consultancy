@@ -28,7 +28,14 @@ build.py             assembles src/ into site/, with checks
 site/                BUILD OUTPUT — committed, deployed. Do not edit.
 functions/api/       Cloudflare Pages Function for the contact form.
                      Must stay at the repo root, not inside site/.
-tools/               dev server, brand-image generator
+tools/               dev server, logo tracer, image generators
+  trace_logo.py      client logo raster -> SVG mark + alpha masters
+  make_images.py     favicon, app icons, share card, from those masters
+  make_photos.py     sourced photography -> cropped WebP/JPEG set
+  brand/             full logo lockup + alpha masters (not deployed)
+images/              source material, none of it deployed
+  photos/            the sourced photographs, as downloaded
+docs/photo-credits.md  photographer, licence and placement for each photo
 docs/DEPLOY.md       deployment + contact-form setup
 .github/workflows/   GitHub Pages build-and-deploy on push to main
 docs/GAPS.md         what still needs a decision before launch
