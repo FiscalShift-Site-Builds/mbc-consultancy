@@ -16,6 +16,13 @@
 <script>(function(){var h=document.documentElement;h.className+=' js';try{if(sessionStorage.getItem('mbc-nav')){h.className+=' from-nav';sessionStorage.removeItem('mbc-nav');}}catch(e){}})();</script>
 
 <link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- The page-transition mark. It has to be decoded before the arrival curtain
+     paints its first frame, or the logo blinks out across the page change. What
+     this buys is early discovery: as a CSS background it was not requested until
+     layout asked for it, ~95ms after the stylesheet had already unblocked paint.
+     Deliberately left at default priority — on the navigation that needs it this
+     is a cache hit, and on a cold first load it must not crowd out the CSS. -->
+<link rel="preload" href="/assets/img/mbc-mark-light.svg" as="image" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/css/mbc.css">
 
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
@@ -67,11 +74,13 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <div class="curtain" aria-hidden="true">
-  <span class="curtain__hold"><span class="curtain__mark"></span></span>
+  <span class="curtain__hold"><img class="curtain__mark" src="/assets/img/mbc-mark-light.svg"
+       alt="" width="293" height="100" decoding="sync"></span>
 </div>
 <div class="wipe" aria-hidden="true">
   <span class="wipe__panel"></span>
-  <span class="wipe__mark"></span>
+  <img class="wipe__mark" src="/assets/img/mbc-mark-light.svg"
+       alt="" width="293" height="100" decoding="sync">
 </div>
 
 {{HEADER}}

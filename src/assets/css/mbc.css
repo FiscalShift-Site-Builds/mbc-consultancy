@@ -2086,14 +2086,17 @@ p {
   transition: opacity 0.22s var(--ease) 0.18s, transform 0.22s var(--ease) 0.18s;
 }
 
-/* The mark itself, in the on-dark colourway the footer already uses. It is a
-   background rather than an <img> so the curtain — which paints on every page
-   load — fetches it during CSS parse, long before the first click needs it. */
+/* The mark itself, in the on-dark colourway the footer already uses. An <img>
+   in the markup rather than a CSS background: a background is only fetched
+   once layout asks for it, which lands it ~95ms after the arrival curtain has
+   already painted its first frame — long enough to see the logo blink out
+   across the page change. The width/height pair holds the box before the
+   image lands, and aspect-ratio keeps the exact trace ratio after. */
 .curtain__mark,
 .wipe__mark {
   width: clamp(168px, 34vw, 264px);
+  height: auto;
   aspect-ratio: 292.7 / 100;
-  background: url('../img/mbc-mark-light.svg') center / contain no-repeat;
 }
 
 /* Scroll reveal. The hidden state is only applied when JS is present, so
