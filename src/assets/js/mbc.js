@@ -65,6 +65,47 @@
   }
 
   /* ------------------------------------------------------------------------
+     Condense the sticky header once the page has moved.
+
+     Only the class is set here; which parts fold away is CSS's decision, so
+     this stays inert at desktop widths where the header already fits. The
+     ResizeObserver in trackHeaderHeight() picks the new height up on its own,
+     which keeps anchor offsets correct through the transition.
+     ------------------------------------------------------------------------ */
+  function initHeaderCondense() {
+    var header = document.querySelector('.header');
+    if (!header) return;
+
+    // Hysteresis: condense at 90px, restore at 40px. Without the gap, a header
+    // that shrinks by 58px can bounce across a single threshold forever.
+    var DOWN = 90;
+    var UP = 40;
+    var condensed = false;
+    var ticking = false;
+
+    function apply() {
+      ticking = false;
+      var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+      if (!condensed && y > DOWN) {
+        condensed = true;
+        header.classList.add('header--condensed');
+      } else if (condensed && y < UP) {
+        condensed = false;
+        header.classList.remove('header--condensed');
+      }
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(apply);
+    }
+
+    apply();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  /* ------------------------------------------------------------------------
      Nav pill carousel
      The strip scrolls horizontally whenever it overflows — no breakpoint, it
      reacts to actual measured width. Chevrons are a pointer affordance only
@@ -598,6 +639,7 @@
   ready(function () {
     [
       trackHeaderHeight,
+      initHeaderCondense,
       initNav,
       initReveal,
       initParallax,
