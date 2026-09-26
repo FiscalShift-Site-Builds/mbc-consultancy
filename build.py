@@ -25,7 +25,9 @@ from urllib.parse import urlsplit
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, "src")
-OUT = os.path.join(ROOT, "site")
+# The Cloudflare Workers build sets MBC_OUT_DIR=dist so its domain-root build
+# never overwrites the committed, sub-path-prefixed site/.
+OUT = os.path.join(ROOT, os.environ.get("MBC_OUT_DIR", "site"))
 
 # ---------------------------------------------------------------------------
 # Site config

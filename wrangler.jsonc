@@ -1,0 +1,27 @@
+// Cloudflare Workers deployment (Workers Builds runs `npx wrangler deploy`).
+// See docs/DEPLOY.md §2.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Must match the Worker's name in the Cloudflare dashboard, or Workers
+  // Builds refuses the deploy.
+  "name": "mbc-consultancy",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-08-01",
+
+  // The committed site/ is prefixed for the GitHub Pages sub-path, so build a
+  // domain-root copy into dist/ instead. Set MBC_SITE_URL as a build variable
+  // once the real domain exists; until then the placeholder domain is used for
+  // canonical and Open Graph URLs only, and every link still works.
+  "build": {
+    "command": "MBC_OUT_DIR=dist python3 build.py --check"
+  },
+
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
+  },
+
+  "observability": { "enabled": true }
+}

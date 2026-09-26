@@ -15,3 +15,7 @@ Thumbs.db
 # Local env — never commit real keys
 .env
 .env.*
+
+# Cloudflare Workers build output (built on deploy from src/)
+dist/
+.wrangler/

@@ -81,6 +81,26 @@ Leave the build command empty — `site/` is already generated and committed.
 `_headers` and `_redirects` are copied into `site/` by the build and are picked
 up automatically.
 
+### Cloudflare Workers setup (what the Cloudflare project currently uses)
+
+If the project was created under **Workers** rather than Pages, Workers Builds
+runs `npx wrangler deploy`, and `wrangler.jsonc` at the repo root drives it:
+
+- `build.command` rebuilds the site into `dist/` with `MBC_OUT_DIR=dist`.
+  The committed `site/` can't be uploaded as-is because every link in it is
+  prefixed with the GitHub Pages sub-path `/mbc-consultancy/`, and those would
+  404 at a Workers root. `dist/` is gitignored and never committed.
+- `assets` serves `dist/`. `_headers`, `_redirects` and `404.html` work the
+  same as on Pages.
+- `worker/index.js` is the Worker script. Only `/api/*` reaches it, and it
+  hands `/api/contact` to the unchanged `functions/api/contact.js`.
+- `name` in `wrangler.jsonc` **must match the Worker's name in the dashboard**.
+- Set `MBC_SITE_URL` (the real domain, with no path) under **Settings → Build →
+  Variables** once the domain exists. The contact-form secrets in §4 go under
+  **Settings → Variables and Secrets**, as for Pages.
+
+Test locally with `npx wrangler dev` (serves the site and runs the function).
+
 ### A note on Pages vs Workers
 
 Cloudflare's current guidance is that **new** projects should use Workers with
