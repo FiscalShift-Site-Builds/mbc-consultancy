@@ -40,7 +40,10 @@ jobs:
         with:
           path: site
 
+  # The same commits are pushed to Kudakwashemaro/mbc-consultancy, which
+  # Cloudflare builds from and which has no Pages site of its own.
   deploy:
+    if: github.repository == 'FiscalShift-Site-Builds/mbc-consultancy'
     needs: build
     runs-on: ubuntu-latest
     environment:

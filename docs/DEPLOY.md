@@ -99,6 +99,18 @@ runs `npx wrangler deploy`, and `wrangler.jsonc` at the repo root drives it:
   Variables** once the domain exists. The contact-form secrets in §4 go under
   **Settings → Variables and Secrets**, as for Pages.
 
+**Cloudflare builds from `Kudakwashemaro/mbc-consultancy`, not the
+FiscalShift-Site-Builds repo.** Both carry the same `main`: `origin` has two
+push URLs, so a plain `git push` updates both. On a fresh clone, restore it:
+
+```bash
+git remote set-url --add --push origin https://github.com/FiscalShift-Site-Builds/mbc-consultancy.git
+git remote set-url --add --push origin https://github.com/Kudakwashemaro/mbc-consultancy.git
+```
+
+To drop the second repo, reconnect the Worker to FiscalShift-Site-Builds under
+**Settings → Build → Git repository**, then remove that push URL.
+
 Test locally with `npx wrangler dev` (serves the site and runs the function).
 
 ### A note on Pages vs Workers
