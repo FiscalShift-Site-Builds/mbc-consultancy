@@ -77,8 +77,8 @@ changes.
 
 Three things need action — see **[docs/GAPS.md](docs/GAPS.md)**:
 
-1. Set the real domain (`MBC_SITE_URL`) — canonical, Open Graph and sitemap
-   URLs are placeholders until you do.
+1. ~~Set the real domain~~ — done: `https://mbconsultancy.co.zw`, set in
+   `wrangler.jsonc` for the Cloudflare build. See docs/DEPLOY.md §3.
 2. Connect the contact form — it currently falls back to WhatsApp because no
    mail provider is configured. See [docs/DEPLOY.md](docs/DEPLOY.md) §4.
 3. Confirm or remove the unsourced claims listed in GAPS.md §A1 — including

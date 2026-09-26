@@ -95,9 +95,9 @@ runs `npx wrangler deploy`, and `wrangler.jsonc` at the repo root drives it:
 - `worker/index.js` is the Worker script. Only `/api/*` reaches it, and it
   hands `/api/contact` to the unchanged `functions/api/contact.js`.
 - `name` in `wrangler.jsonc` **must match the Worker's name in the dashboard**.
-- Set `MBC_SITE_URL` (the real domain, with no path) under **Settings → Build →
-  Variables** once the domain exists. The contact-form secrets in §4 go under
-  **Settings → Variables and Secrets**, as for Pages.
+- The build command sets `MBC_SITE_URL=https://mbconsultancy.co.zw` (see §3).
+  The contact-form secrets in §4 go under **Settings → Variables and Secrets**,
+  as for Pages.
 
 **Cloudflare builds from `Kudakwashemaro/mbc-consultancy`, not the
 FiscalShift-Site-Builds repo.** Both carry the same `main`: `origin` has two
@@ -124,19 +124,20 @@ across with no change to the HTML.
 
 ---
 
-## 3. Set the domain — do this before launch
+## 3. The domain
 
-Until the real domain is set, the canonical links, Open Graph tags, JSON-LD and
-`sitemap.xml` all point at the placeholder `https://mbcconsultancy.example`.
-Search engines and WhatsApp link previews will be wrong.
+The production domain is **`https://mbconsultancy.co.zw`** (one "c" after
+"mb"). It is on Cloudflare and attached to the `mbc-consultancy` Worker, and
+the Worker's build command in `wrangler.jsonc` passes it as `MBC_SITE_URL`, so
+the canonical links, Open Graph tags, JSON-LD and `sitemap.xml` on the live
+site all point at it.
 
-```bash
-MBC_SITE_URL=https://the-real-domain.co.zw python3 build.py --check
-git add site && git commit -m "Set production domain"
-```
+The committed `site/` is still built for the GitHub Pages address (§1). Any
+build run without `MBC_SITE_URL` falls back to the placeholder
+`https://mbcconsultancy.example`, and prints a warning.
 
-Or edit the `PLACEHOLDER_URL` fallback near the top of `build.py`. The build
-prints a warning while the placeholder is still in use.
+`www.mbconsultancy.co.zw` has no DNS record. To serve it, add it as a second
+custom domain on the Worker, or redirect it to the bare domain.
 
 ---
 
@@ -283,7 +284,7 @@ changes) — see `tools/make_images.py`; it needs Pillow and the Archivo TTFs.
 
 ## 7. Pre-launch checklist
 
-- [ ] `MBC_SITE_URL` set to the real domain and `site/` rebuilt (§3)
+- [x] `MBC_SITE_URL` set to `https://mbconsultancy.co.zw` for the Cloudflare build (§3)
 - [ ] `RESEND_API_KEY` + `MAIL_TO` set, and a test enquiry received (§4)
 - [ ] Turnstile sitekey + secret in place (§5)
 - [ ] Decide on the claims and content flagged in [`GAPS.md`](GAPS.md) §A

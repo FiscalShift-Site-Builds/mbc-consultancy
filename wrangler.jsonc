@@ -9,11 +9,11 @@
   "compatibility_date": "2026-08-01",
 
   // The committed site/ is prefixed for the GitHub Pages sub-path, so build a
-  // domain-root copy into dist/ instead. Set MBC_SITE_URL as a build variable
-  // once the real domain exists; until then the placeholder domain is used for
-  // canonical and Open Graph URLs only, and every link still works.
+  // domain-root copy into dist/ instead. MBC_SITE_URL feeds the canonical,
+  // Open Graph, JSON-LD and sitemap URLs; it must stay a bare origin with no
+  // path, or build.py prefixes every link with that path.
   "build": {
-    "command": "MBC_OUT_DIR=dist python3 build.py --check"
+    "command": "MBC_SITE_URL=https://mbconsultancy.co.zw MBC_OUT_DIR=dist python3 build.py --check"
   },
 
   "assets": {

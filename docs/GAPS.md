@@ -124,8 +124,10 @@ settled rather than open, but they bind future edits:
 
 `mmazha800@gmail.com` is the firm's contact address on every page. Against a
 brief asking for "precision, reliability and deep regulatory knowledge", a
-firm-domain address would carry more weight — and it is required anyway before
-the form can send from your own domain (see `DEPLOY.md` §3).
+firm-domain address would carry more weight. Now that `mbconsultancy.co.zw`
+exists, an address such as `enquiries@mbconsultancy.co.zw` is possible, and
+the same domain lets the form send from it (see `DEPLOY.md` §4, "Upgrading
+once you own a domain").
 
 ### A4. No privacy notice
 
