@@ -48,7 +48,7 @@ SITE_URL = os.environ.get("MBC_SITE_URL", PLACEHOLDER_URL).rstrip("/")
 BASE = urlsplit(SITE_URL).path.rstrip("/")
 
 # nav key -> the pages that should show that nav item as current
-NAV_KEYS = ("compliance", "services", "fiscalisation", "about", "contact")
+NAV_KEYS = ("compliance", "services", "fiscalisation", "training", "about", "contact")
 
 PAGES = [
     {
@@ -104,6 +104,19 @@ PAGES = [
         "priority": "0.8",
     },
     {
+        "slug": "training",
+        "path": "/training",
+        "nav": "training",
+        "title": "Compliance training — ZIMRA, CIPZ, NSSA & fiscalisation | MBC Consultancy",
+        "og_title": "Compliance your team can run with confidence.",
+        "desc": (
+            "On-site, online and public training on ZIMRA tax and TaRMS, CIPZ "
+            "returns and governance, NSSA and payroll, and fiscalisation, with a "
+            "certificate of attendance. Book a session online."
+        ),
+        "priority": "0.8",
+    },
+    {
         "slug": "about",
         "path": "/about",
         "nav": "about",
@@ -144,7 +157,7 @@ PAGES = [
         "nav": None,
         "title": "Page not found | MBC Consultancy",
         "og_title": "Page not found",
-        "desc": "That page is not here. Find compliance, accounting, fiscalisation, about and contact instead.",
+        "desc": "That page is not here. Find compliance, accounting, fiscalisation, training, about and contact instead.",
         "noindex": True,
     },
 ]

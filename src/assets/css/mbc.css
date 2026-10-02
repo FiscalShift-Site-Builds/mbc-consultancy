@@ -794,6 +794,16 @@ p {
   border-left: 1px solid var(--line-200);
 }
 
+.svcgrid--four {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1180px) {
+  .svcgrid--four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .svccard {
   display: flex;
   flex-direction: column;

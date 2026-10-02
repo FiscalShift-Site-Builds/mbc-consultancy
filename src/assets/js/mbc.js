@@ -575,6 +575,9 @@
       if (company) lines.push('Company: ' + company);
       if (email) lines.push('Email: ' + email);
       if (needs.length) lines.push('Needs: ' + needs.join(', '));
+      if (d.get('format')) lines.push('Format: ' + d.get('format'));
+      if (d.get('attendees')) lines.push('Attendees: ' + d.get('attendees'));
+      if (d.get('preferred_dates')) lines.push('Preferred dates: ' + d.get('preferred_dates'));
       if (message) lines.push('', message);
       return 'https://wa.me/' + wa + '?text=' + encodeURIComponent(lines.join('\n'));
     }

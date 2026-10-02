@@ -31,12 +31,24 @@ const FIELD_LABELS = {
   email: 'Email',
   phone: 'Phone / WhatsApp',
   services: 'Needs',
+  format: 'Training format',
+  attendees: 'Attendees',
+  preferred_dates: 'Preferred dates',
   message: 'Message',
   enquiry: 'From package',
   page: 'Submitted from'
 };
 
-const MAX_LEN = { name: 200, company: 200, email: 320, phone: 60, message: 5000 };
+const MAX_LEN = {
+  name: 200,
+  company: 200,
+  email: 320,
+  phone: 60,
+  format: 60,
+  attendees: 10,
+  preferred_dates: 200,
+  message: 5000
+};
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -162,6 +174,7 @@ async function verifyTurnstile(secret, token, ip) {
 
 function subjectFor(values) {
   const who = values.company ? values.name + ' — ' + values.company : values.name;
+  if (values.page === '/training') return 'Training booking — ' + who;
   const topic = values.services.length ? values.services[0] : 'Enquiry';
   return 'Website enquiry: ' + topic + ' — ' + who;
 }
@@ -221,6 +234,18 @@ function respond(request, status, ok, message, code) {
       headers: { 'Content-Type': 'application/json; charset=utf-8' }
     });
   }
-  const target = ok ? '/thanks' : '/contact?error=1#enquiry';
+  const target = ok ? '/thanks' : failTarget(request);
   return Response.redirect(new URL(target, request.url).toString(), 303);
+}
+
+/** Send a failed no-JavaScript post back to the form it came from. */
+function failTarget(request) {
+  let from = '';
+  try {
+    from = new URL(request.headers.get('Referer') || '').pathname;
+  } catch (err) {
+    from = '';
+  }
+  if (from.replace(/\/$/, '').endsWith('/training')) return '/training?error=1#booking';
+  return '/contact?error=1#enquiry';
 }
